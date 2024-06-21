@@ -3,42 +3,55 @@ use bevy::{
     asset::AssetServer,
     core_pipeline::core_2d::Camera2dBundle,
     ecs::{
-        bundle::Bundle,
         component::Component,
-        event::{Event, EventReader, EventWriter},
+        event::EventWriter,
         query::With,
-        schedule::IntoSystemConfigs,
         system::{Commands, Query, Res, ResMut, Resource},
     },
     input::{mouse::MouseButton, ButtonInput},
-    math::{Vec2, Vec3},
-    render::{
-        camera::{Camera, ScalingMode},
-        color::Color,
-    },
+    math::Vec2,
+    prelude::IntoSystemConfigs,
+    render::camera::{Camera, ScalingMode},
     sprite::SpriteBundle,
-    text::{Text, TextStyle},
     transform::components::{GlobalTransform, Transform},
-    ui::node_bundles::TextBundle,
     window::{PrimaryWindow, Window},
+};
+use locations::{setup_locations, Encounter, Location, SquareCollider};
+use ui::{
+    setup_ui, update_encounter_text, update_food_value, update_water_value, update_wood_value,
+    UpdateEncounterText, UpdateFoodValue, UpdateWaterValue, UpdateWoodValue,
 };
 
 pub const WINDOW_START_WIDTH: f32 = 1920.;
 pub const WINDOW_START_HEIGHT: f32 = 1080.;
+
+pub mod locations;
+pub mod ui;
 
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<CursorWorldCoords>()
-            .add_event::<LocationClickedEvent>()
-            .add_systems(Startup, setup)
+            .insert_resource(PlayerResources {
+                food: 50,
+                water: 50,
+                wood: 50,
+            })
+            .add_event::<UpdateEncounterText>()
+            .add_event::<UpdateFoodValue>()
+            .add_event::<UpdateWaterValue>()
+            .add_event::<UpdateWoodValue>()
+            .add_systems(Startup, (setup, setup_ui, setup_locations))
             .add_systems(
                 Update,
                 (
                     update_cursor_position,
-                    detect_mouse_collisions.after(update_cursor_position),
-                    update_text,
+                    process_mouse_click.after(update_cursor_position),
+                    update_encounter_text,
+                    update_food_value,
+                    update_water_value,
+                    update_wood_value,
                 ),
             );
     }
@@ -47,50 +60,15 @@ impl Plugin for GamePlugin {
 #[derive(Component)]
 struct GameCamera;
 
-#[derive(Component)]
-struct Location;
-
 #[derive(Resource, Default)]
 struct CursorWorldCoords(Vec2);
 
-#[derive(Component)]
-struct SquareCollier {
-    half_width: f32,
-    half_height: f32,
+#[derive(Resource)]
+pub struct PlayerResources {
+    pub food: i32,
+    pub water: i32,
+    pub wood: i32,
 }
-
-#[derive(Component)]
-struct LocationText(String);
-
-#[derive(Bundle)]
-struct LocationBundle {
-    marker: Location,
-    text: LocationText,
-    collider: SquareCollier,
-    sprite: SpriteBundle,
-}
-
-impl LocationBundle {
-    fn new(position: Vec3, text: String, asset_server: &Res<AssetServer>) -> Self {
-        LocationBundle {
-            marker: Location,
-            text: LocationText(text),
-            collider: SquareCollier {
-                half_width: 25.,
-                half_height: 25.,
-            },
-            sprite: SpriteBundle {
-                transform: Transform::from_translation(position)
-                    .with_scale(Vec3::new(0.5, 0.5, 1.)),
-                texture: asset_server.load("textures/location.png"),
-                ..Default::default()
-            },
-        }
-    }
-}
-
-#[derive(Component)]
-struct GameText;
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     let mut camera_bundle = Camera2dBundle::default();
@@ -105,34 +83,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         texture: asset_server.load("textures/background.png"),
         ..Default::default()
     });
-
-    commands.spawn(LocationBundle::new(
-        Vec3::new(-550., -150., 1.),
-        "location 1".to_string(),
-        &asset_server,
-    ));
-    commands.spawn(LocationBundle::new(
-        Vec3::new(-300., 50., 1.),
-        "location 2".to_string(),
-        &asset_server,
-    ));
-    commands.spawn(LocationBundle::new(
-        Vec3::new(0., 200., 1.),
-        "location 3".to_string(),
-        &asset_server,
-    ));
-
-    commands.spawn((
-        TextBundle::from_section(
-            "TEST",
-            TextStyle {
-                font_size: 16.,
-                color: Color::WHITE,
-                ..Default::default()
-            },
-        ),
-        GameText,
-    ));
 }
 
 fn update_cursor_position(
@@ -152,37 +102,73 @@ fn update_cursor_position(
     }
 }
 
-#[derive(Event)]
-struct LocationClickedEvent(String);
-
-fn detect_mouse_collisions(
+fn process_mouse_click(
     cursor_world_coords: Res<CursorWorldCoords>,
+    mut player_resources: ResMut<PlayerResources>,
     mouse_buttons: Res<ButtonInput<MouseButton>>,
-    query: Query<(&Transform, &LocationText, &SquareCollier), With<Location>>,
-    mut location_clicked_event_writer: EventWriter<LocationClickedEvent>,
+    query: Query<(&Transform, &Encounter, &SquareCollider), With<Location>>,
+    mut encounter_text_events: EventWriter<UpdateEncounterText>,
+    mut food_value_events: EventWriter<UpdateFoodValue>,
+    mut water_value_events: EventWriter<UpdateWaterValue>,
+    mut wood_value_events: EventWriter<UpdateWoodValue>,
 ) {
-    for (transform, text, collider) in &query {
-        let pos = transform.translation;
-        let cursor_pos = cursor_world_coords.0;
+    if mouse_buttons.just_released(MouseButton::Left) {
+        for (transform, encounter, collider) in &query {
+            let pos = transform.translation;
+            let cursor_pos = cursor_world_coords.0;
 
-        if (cursor_pos.x <= pos.x + collider.half_width)
-            && (cursor_pos.x >= pos.x - collider.half_width)
-            && (cursor_pos.y <= pos.y + collider.half_height)
-            && (cursor_pos.y >= pos.y - collider.half_height)
-        {
-            if mouse_buttons.just_released(MouseButton::Left) {
-                location_clicked_event_writer.send(LocationClickedEvent(text.0.clone()));
+            if (cursor_pos.x <= pos.x + collider.half_width)
+                && (cursor_pos.x >= pos.x - collider.half_width)
+                && (cursor_pos.y <= pos.y + collider.half_height)
+                && (cursor_pos.y >= pos.y - collider.half_height)
+            {
+                encounter_text_events.send(UpdateEncounterText(encounter.text.clone()));
+
+                if let Some(food) = encounter.food {
+                    let new_food = player_resources.food + food;
+
+                    if new_food > 0 {
+                        food_value_events.send(UpdateFoodValue(new_food));
+                        player_resources.food = new_food;
+                    } else {
+                        encounter_text_events
+                            .send(UpdateEncounterText("You fucked it".to_string()));
+
+                        player_resources.food = 0;
+                        food_value_events.send(UpdateFoodValue(0));
+                    }
+                }
+
+                if let Some(water) = encounter.water {
+                    let new_water = player_resources.water + water;
+
+                    if new_water > 0 {
+                        water_value_events.send(UpdateWaterValue(new_water));
+                        player_resources.water = new_water;
+                    } else {
+                        encounter_text_events
+                            .send(UpdateEncounterText("You fucked it".to_string()));
+
+                        player_resources.water = 0;
+                        water_value_events.send(UpdateWaterValue(0));
+                    }
+                }
+
+                if let Some(wood) = encounter.wood {
+                    let new_wood = player_resources.wood + wood;
+
+                    if new_wood > 0 {
+                        wood_value_events.send(UpdateWoodValue(new_wood));
+                        player_resources.wood = new_wood;
+                    } else {
+                        encounter_text_events
+                            .send(UpdateEncounterText("You fucked it".to_string()));
+
+                        player_resources.wood = 0;
+                        wood_value_events.send(UpdateWoodValue(0));
+                    }
+                }
             }
         }
-    }
-}
-
-fn update_text(
-    mut ev_reader: EventReader<LocationClickedEvent>,
-    mut query: Query<&mut Text, With<GameText>>,
-) {
-    for ev in ev_reader.read() {
-        let mut text = query.single_mut();
-        text.sections[0].value = ev.0.clone();
     }
 }
