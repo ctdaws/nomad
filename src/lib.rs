@@ -9,14 +9,20 @@ use bevy::{
         system::{Commands, Query, Res, ResMut, Resource},
     },
     input::{mouse::MouseButton, ButtonInput},
-    math::Vec2,
+    math::{Quat, Vec2, Vec3},
     prelude::IntoSystemConfigs,
     render::camera::{Camera, ScalingMode},
-    sprite::SpriteBundle,
+    sprite::{Sprite, SpriteBundle},
     transform::components::{GlobalTransform, Transform},
     window::{PrimaryWindow, Window},
 };
-use locations::{setup_locations, Encounter, Location, SquareCollider};
+use locations::{
+    location::{Encounter, Location, SquareCollider},
+    location_config::LocationId,
+    locations::{
+        process_location_moved, set_start_location, setup_locations, LocationMoved, Locations,
+    },
+};
 use ui::{
     setup_ui, update_encounter_text, update_food_value, update_water_value, update_wood_value,
     UpdateEncounterText, UpdateFoodValue, UpdateWaterValue, UpdateWoodValue,
@@ -25,7 +31,11 @@ use ui::{
 pub const WINDOW_START_WIDTH: f32 = 1920.;
 pub const WINDOW_START_HEIGHT: f32 = 1080.;
 
-pub mod locations;
+pub mod locations {
+    pub mod location;
+    pub mod location_config;
+    pub mod locations;
+}
 pub mod ui;
 
 pub struct GamePlugin;
@@ -33,16 +43,26 @@ pub struct GamePlugin;
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<CursorWorldCoords>()
+            .init_resource::<Locations>()
             .insert_resource(PlayerResources {
                 food: 50,
                 water: 50,
                 wood: 50,
             })
+            .add_event::<LocationMoved>()
             .add_event::<UpdateEncounterText>()
             .add_event::<UpdateFoodValue>()
             .add_event::<UpdateWaterValue>()
             .add_event::<UpdateWoodValue>()
-            .add_systems(Startup, (setup, setup_ui, setup_locations))
+            .add_systems(
+                Startup,
+                (
+                    setup,
+                    setup_ui,
+                    setup_locations,
+                    set_start_location.after(setup_locations),
+                ),
+            )
             .add_systems(
                 Update,
                 (
@@ -52,6 +72,7 @@ impl Plugin for GamePlugin {
                     update_food_value,
                     update_water_value,
                     update_wood_value,
+                    process_location_moved,
                 ),
             );
     }
@@ -83,6 +104,17 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         texture: asset_server.load("textures/background.png"),
         ..Default::default()
     });
+
+    commands.spawn(SpriteBundle {
+        texture: asset_server.load("textures/connection.png"),
+        sprite: Sprite {
+            custom_size: Some(Vec2::new(100., 100.)),
+            ..Default::default()
+        },
+        transform: Transform::from_translation(Vec3::new(0., 0., 2.))
+            .with_rotation(Quat::from_rotation_z(0.57)),
+        ..Default::default()
+    });
 }
 
 fn update_cursor_position(
@@ -106,14 +138,15 @@ fn process_mouse_click(
     cursor_world_coords: Res<CursorWorldCoords>,
     mut player_resources: ResMut<PlayerResources>,
     mouse_buttons: Res<ButtonInput<MouseButton>>,
-    query: Query<(&Transform, &Encounter, &SquareCollider), With<Location>>,
+    query: Query<(&Transform, &Encounter, &SquareCollider, &LocationId), With<Location>>,
     mut encounter_text_events: EventWriter<UpdateEncounterText>,
     mut food_value_events: EventWriter<UpdateFoodValue>,
     mut water_value_events: EventWriter<UpdateWaterValue>,
     mut wood_value_events: EventWriter<UpdateWoodValue>,
+    mut location_moved_events: EventWriter<LocationMoved>,
 ) {
     if mouse_buttons.just_released(MouseButton::Left) {
-        for (transform, encounter, collider) in &query {
+        for (transform, encounter, collider, location_id) in &query {
             let pos = transform.translation;
             let cursor_pos = cursor_world_coords.0;
 
@@ -122,6 +155,10 @@ fn process_mouse_click(
                 && (cursor_pos.y <= pos.y + collider.half_height)
                 && (cursor_pos.y >= pos.y - collider.half_height)
             {
+                location_moved_events.send(LocationMoved {
+                    prev: LocationId(0),
+                    new: location_id.clone(),
+                });
                 encounter_text_events.send(UpdateEncounterText(encounter.text.clone()));
 
                 if let Some(food) = encounter.food {
