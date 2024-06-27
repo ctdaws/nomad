@@ -1,4 +1,6 @@
-use bevy::{ecs::component::Component, math::Vec3};
+use bevy::math::Vec3;
+
+use super::location::LocationId;
 
 pub struct EncounterConfig {
     pub text: String,
@@ -7,9 +9,6 @@ pub struct EncounterConfig {
     pub water: Option<i32>,
     pub wood: Option<i32>,
 }
-
-#[derive(Component, Eq, PartialEq, Hash, Clone, Debug)]
-pub struct LocationId(pub u32);
 
 pub struct LocationConfig {
     pub location_id: LocationId,
