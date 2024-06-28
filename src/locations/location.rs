@@ -9,7 +9,7 @@ use bevy::{
         query::With,
         system::{Commands, Query, Res, ResMut, Resource},
     },
-    math::{Vec2, Vec3},
+    math::{Quat, Vec2, Vec3},
     render::color::Color,
     sprite::{Sprite, SpriteBundle},
     transform::components::Transform,
@@ -88,8 +88,8 @@ impl LocationBundle {
             id,
             encounter,
             collider: SquareCollider {
-                half_width: 25.,
-                half_height: 25.,
+                half_width: 15.,
+                half_height: 15.,
             },
             state: LocationState::NotSelectable,
             connected_locations,
@@ -97,7 +97,7 @@ impl LocationBundle {
                 transform: Transform::from_translation(position),
                 sprite: Sprite {
                     color: Color::BLACK,
-                    custom_size: Some(Vec2::new(50., 50.)),
+                    custom_size: Some(Vec2::new(30., 30.)),
                     ..Default::default()
                 },
                 ..Default::default()
@@ -112,13 +112,81 @@ pub fn setup_locations(mut commands: Commands, mut locations: ResMut<Locations>)
     let mut to_visit = VecDeque::<LocationId>::new();
     to_visit.push_back(LocationId(0));
 
+    let mut connections_initialised = HashMap::<LocationId, Vec<LocationId>>::new();
+
     while !to_visit.is_empty() {
         let location = to_visit.pop_front().unwrap();
 
+        if connections_initialised.get(&location).is_none() {
+            connections_initialised.insert(location.clone(), vec![]);
+        }
+
         if !visited.contains(&location) {
             for connected_location in configs[&location].connected_locations.clone() {
-                if !visited.contains(&connected_location) {
-                    to_visit.push_back(connected_location);
+                if !visited.contains(&connected_location) && !to_visit.contains(&connected_location)
+                {
+                    to_visit.push_back(connected_location.clone());
+
+                    if !connections_initialised
+                        .get(&connected_location)
+                        .is_some_and(|locs| locs.contains(&location.clone()))
+                    {
+                        //init connection
+
+                        // Needs to be dest - start
+                        let start_pos = configs[&location].position;
+                        let dest_pos = configs[&connected_location.clone()].position;
+
+                        let between_vec = dest_pos - start_pos;
+
+                        let mut connection_pos =
+                            start_pos + between_vec.div_euclid(Vec3::new(2., 2., 1.));
+                        connection_pos.z = 1.;
+
+                        let connection_length = between_vec.length();
+
+                        let angle = between_vec.y.atan2(between_vec.x);
+
+                        commands.spawn(SpriteBundle {
+                            transform: Transform::from_translation(connection_pos)
+                                .with_rotation(Quat::from_rotation_z(angle)),
+                            sprite: Sprite {
+                                color: Color::BLACK,
+                                custom_size: Some(Vec2::new(connection_length, 10.)),
+                                ..Default::default()
+                            },
+                            ..Default::default()
+                        });
+                    }
+
+                    if let Some(locs) = connections_initialised.get_mut(&location) {
+                        locs.push(connected_location);
+                    }
+
+                    // let p1 = Vec3::new(-550., -150., 1.);
+                    // // let p2 = Vec3::new(-300., 50., 1.);
+                    // let p2 = Vec3::new(-300., 50., 1.);
+
+                    // // Needs to be dest - source
+                    // let between = p2 - p1;
+
+                    // let connection_pos = p1 + between.div_euclid(Vec3::new(2., 2., 1.));
+                    // // let connection_pos = Vec3::new(0., 0., 1.);
+                    // let connection_length = between.length();
+
+                    // let angle = between.y.atan2(between.x);
+
+                    // commands.spawn(SpriteBundle {
+                    //     transform: Transform::from_translation(connection_pos)
+                    //         .with_rotation(Quat::from_rotation_z(angle)),
+                    //     // .with_rotation(Quat::from_rotation_arc(p2.normalize(), p1.normalize())),
+                    //     sprite: Sprite {
+                    //         color: Color::BLACK,
+                    //         custom_size: Some(Vec2::new(connection_length, 10.)),
+                    //         ..Default::default()
+                    //     },
+                    //     ..Default::default()
+                    // });
                 }
             }
 
