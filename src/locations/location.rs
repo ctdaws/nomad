@@ -123,8 +123,7 @@ pub fn setup_locations(mut commands: Commands, mut locations: ResMut<Locations>)
 
         if !visited.contains(&location) {
             for connected_location in configs[&location].connected_locations.clone() {
-                if !visited.contains(&connected_location) && !to_visit.contains(&connected_location)
-                {
+                if !visited.contains(&connected_location) {
                     to_visit.push_back(connected_location.clone());
 
                     if !connections_initialised
@@ -132,7 +131,6 @@ pub fn setup_locations(mut commands: Commands, mut locations: ResMut<Locations>)
                         .is_some_and(|locs| locs.contains(&location.clone()))
                     {
                         //init connection
-
                         // Needs to be dest - start
                         let start_pos = configs[&location].position;
                         let dest_pos = configs[&connected_location.clone()].position;
@@ -162,31 +160,6 @@ pub fn setup_locations(mut commands: Commands, mut locations: ResMut<Locations>)
                     if let Some(locs) = connections_initialised.get_mut(&location) {
                         locs.push(connected_location);
                     }
-
-                    // let p1 = Vec3::new(-550., -150., 1.);
-                    // // let p2 = Vec3::new(-300., 50., 1.);
-                    // let p2 = Vec3::new(-300., 50., 1.);
-
-                    // // Needs to be dest - source
-                    // let between = p2 - p1;
-
-                    // let connection_pos = p1 + between.div_euclid(Vec3::new(2., 2., 1.));
-                    // // let connection_pos = Vec3::new(0., 0., 1.);
-                    // let connection_length = between.length();
-
-                    // let angle = between.y.atan2(between.x);
-
-                    // commands.spawn(SpriteBundle {
-                    //     transform: Transform::from_translation(connection_pos)
-                    //         .with_rotation(Quat::from_rotation_z(angle)),
-                    //     // .with_rotation(Quat::from_rotation_arc(p2.normalize(), p1.normalize())),
-                    //     sprite: Sprite {
-                    //         color: Color::BLACK,
-                    //         custom_size: Some(Vec2::new(connection_length, 10.)),
-                    //         ..Default::default()
-                    //     },
-                    //     ..Default::default()
-                    // });
                 }
             }
 
