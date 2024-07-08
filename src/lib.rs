@@ -33,6 +33,7 @@ pub mod locations {
 }
 pub mod ui {
     pub mod encounter;
+    pub mod home;
     pub mod plugin;
     pub mod resources;
 }
@@ -44,9 +45,14 @@ impl Plugin for GamePlugin {
         app.add_plugins((UIPlugin, LocationsPlugin))
             .init_resource::<CursorWorldCoords>()
             .insert_resource(PlayerResources {
-                food: 50,
-                water: 50,
-                wood: 50,
+                food: 5,
+                water: 5,
+                wood: 5,
+            })
+            .insert_resource(SettlementResources {
+                food: 0,
+                water: 0,
+                wood: 0,
             })
             .add_systems(Startup, setup)
             .add_systems(
@@ -64,6 +70,13 @@ struct CursorWorldCoords(Vec2);
 
 #[derive(Resource)]
 pub struct PlayerResources {
+    pub food: i32,
+    pub water: i32,
+    pub wood: i32,
+}
+
+#[derive(Resource)]
+pub struct SettlementResources {
     pub food: i32,
     pub water: i32,
     pub wood: i32,

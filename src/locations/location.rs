@@ -281,9 +281,10 @@ pub fn location_selected(
             }
 
             update_resources_events.send(UpdateResources {
-                food: Some(player_resources.food),
-                water: Some(player_resources.water),
-                wood: Some(player_resources.wood),
+                player_food: Some(player_resources.food),
+                player_water: Some(player_resources.water),
+                player_wood: Some(player_resources.wood),
+                ..Default::default()
             });
 
             update_encounter_events.send(UpdateEncounter(encounter.text.clone()));
