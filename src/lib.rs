@@ -33,6 +33,7 @@ pub mod locations {
 }
 pub mod ui {
     pub mod encounter;
+    pub mod game_over;
     pub mod home;
     pub mod plugin;
     pub mod resources;

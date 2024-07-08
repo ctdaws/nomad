@@ -28,9 +28,9 @@ pub fn location_configs() -> HashMap<LocationId, LocationConfig> {
             location_id: LocationId(1),
             position: Vec3::new(-462., -34., 2.),
             encounter: EncounterConfig {
-                text: "You find a berry bush by a stream. +10 food +20 water".to_string(),
-                food: Some(10),
-                water: Some(20),
+                text: "You find a berry bush by a stream. +1 food +1 water".to_string(),
+                food: Some(1),
+                water: Some(1),
                 wood: None,
             },
             connected_locations: vec![LocationId(0), LocationId(2), LocationId(10)],

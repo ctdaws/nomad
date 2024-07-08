@@ -244,9 +244,8 @@ pub fn location_selected(
             }
         }
 
-        player_resources.food -= 10;
-        player_resources.water -= 10;
-        player_resources.wood -= 10;
+        player_resources.food -= 1;
+        player_resources.water -= 1;
 
         if let Ok((mut sprite, connected_locations, _, mut state)) =
             query.get_mut(locations.0[&current_location.0])
