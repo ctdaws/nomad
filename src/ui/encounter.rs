@@ -73,8 +73,7 @@ pub fn setup_encounter(mut commands: Commands) {
                     top: Val::Px(10.),
                     left: Val::Px(10.),
                     ..Default::default()
-                })
-                .with_background_color(Color::ORANGE),
+                }),
             ));
 
             parent.spawn((
@@ -92,7 +91,6 @@ pub fn setup_encounter(mut commands: Commands) {
                         justify_content: JustifyContent::SpaceAround,
                         ..Default::default()
                     },
-                    background_color: BackgroundColor(Color::YELLOW),
                     ..Default::default()
                 },
             ));
