@@ -10,14 +10,17 @@ use bevy::{
         system::{Commands, Query, Res, ResMut, Resource},
     },
     math::{Quat, Vec2, Vec3},
-    render::color::Color,
+    render::{color::Color, view::Visibility},
     sprite::{Sprite, SpriteBundle},
     transform::components::Transform,
     utils::HashMap,
 };
 
 use crate::{
-    ui::{encounter::UpdateEncounter, resources::UpdateResources},
+    ui::{
+        encounter::{EncounterUI, UpdateEncounter},
+        resources::UpdateResources,
+    },
     PlayerResources,
 };
 
@@ -38,13 +41,19 @@ pub struct Location;
 #[derive(Component, Eq, PartialEq, Hash, Clone, Debug)]
 pub struct LocationId(pub u32);
 
-#[derive(Component)]
-pub struct Encounter {
+#[derive(Component, Clone, Debug)]
+pub struct EncounterOption {
     pub text: String,
     // The amount of a resource to add/remove from the player
     pub food: Option<i32>,
     pub water: Option<i32>,
     pub wood: Option<i32>,
+}
+
+#[derive(Component)]
+pub struct Encounter {
+    pub text: String,
+    pub options: Vec<EncounterOption>,
 }
 
 #[derive(Component)]
@@ -169,9 +178,17 @@ pub fn setup_locations(mut commands: Commands, mut locations: ResMut<Locations>)
                     configs[&location].position,
                     Encounter {
                         text: configs[&location].encounter.text.clone(),
-                        food: configs[&location].encounter.food,
-                        water: configs[&location].encounter.water,
-                        wood: configs[&location].encounter.wood,
+                        options: configs[&location]
+                            .encounter
+                            .options
+                            .iter()
+                            .map(|option| EncounterOption {
+                                text: option.text.clone(),
+                                food: option.food,
+                                water: option.water,
+                                wood: option.wood,
+                            })
+                            .collect(),
                     },
                     ConnectedLocations(configs[&location].connected_locations.clone()),
                 ))
@@ -205,7 +222,10 @@ pub fn set_start_location(
         *location_state = LocationState::Current;
         sprite.color = Color::MAROON;
 
-        update_encounter_events.send(UpdateEncounter(encounter.text.clone()));
+        update_encounter_events.send(UpdateEncounter {
+            text: encounter.text.clone(),
+            options: encounter.options.clone(),
+        });
         location_moved_events.send(LocationSelected(start_location.0.clone()));
 
         for loc in connected_locations.0.clone() {
@@ -233,6 +253,7 @@ pub fn location_selected(
         ),
         With<Location>,
     >,
+    mut encounter_ui_query: Query<&mut Visibility, With<EncounterUI>>,
 ) {
     for ev in evs.read() {
         if let Ok((_, _, _, state)) = query.get_mut(locations.0[&ev.0]) {
@@ -246,6 +267,12 @@ pub fn location_selected(
 
         player_resources.food -= 1;
         player_resources.water -= 1;
+
+        update_resources_events.send(UpdateResources {
+            player_food: Some(player_resources.food),
+            player_water: Some(player_resources.water),
+            ..Default::default()
+        });
 
         if let Ok((mut sprite, connected_locations, _, mut state)) =
             query.get_mut(locations.0[&current_location.0])
@@ -267,26 +294,10 @@ pub fn location_selected(
             sprite.color = Color::MAROON;
             *state = LocationState::Current;
 
-            if let Some(food) = encounter.food {
-                player_resources.food += food
-            }
-
-            if let Some(water) = encounter.water {
-                player_resources.water += water
-            }
-
-            if let Some(wood) = encounter.wood {
-                player_resources.wood += wood
-            }
-
-            update_resources_events.send(UpdateResources {
-                player_food: Some(player_resources.food),
-                player_water: Some(player_resources.water),
-                player_wood: Some(player_resources.wood),
-                ..Default::default()
+            update_encounter_events.send(UpdateEncounter {
+                text: encounter.text.clone(),
+                options: encounter.options.clone(),
             });
-
-            update_encounter_events.send(UpdateEncounter(encounter.text.clone()));
 
             for loc in connected_locations.0.clone() {
                 if let Ok((mut sprite, _, _, mut state)) = query.get_mut(locations.0[&loc]) {
@@ -295,6 +306,8 @@ pub fn location_selected(
                 }
             }
         }
+
+        *encounter_ui_query.single_mut() = Visibility::Visible;
 
         current_location.0 = ev.0.clone();
     }

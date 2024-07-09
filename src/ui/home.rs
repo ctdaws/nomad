@@ -59,8 +59,8 @@ pub fn setup_home_ui(mut commands: Commands) {
                     position_type: PositionType::Absolute,
                     width: Val::Px(470.),
                     height: Val::Px(140.),
-                    left: Val::Px(1030.),
-                    top: Val::Px(130.),
+                    left: Val::Px(500.),
+                    top: Val::Px(10.),
                     ..Default::default()
                 },
                 ..Default::default()

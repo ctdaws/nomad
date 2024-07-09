@@ -11,7 +11,7 @@ use bevy::{
 
 use crate::{
     locations::location::{CurrentLocation, LocationId},
-    PlayerResources, SettlementResources,
+    PlayerResources,
 };
 
 #[derive(Component)]

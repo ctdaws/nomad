@@ -10,7 +10,7 @@ use bevy::{
     text::{Text, TextSection, TextStyle},
     ui::{
         node_bundles::{NodeBundle, TextBundle},
-        BackgroundColor, Display, FlexDirection, PositionType, Style, Val,
+        Display, FlexDirection, PositionType, Style, Val,
     },
 };
 
