@@ -203,7 +203,7 @@ pub fn set_start_location(
         query.get_mut(locations.0[&LocationId(0)])
     {
         *location_state = LocationState::Current;
-        sprite.color = Color::GREEN;
+        sprite.color = Color::MAROON;
 
         update_encounter_events.send(UpdateEncounter(encounter.text.clone()));
         location_moved_events.send(LocationSelected(start_location.0.clone()));
@@ -211,7 +211,7 @@ pub fn set_start_location(
         for loc in connected_locations.0.clone() {
             if let Ok((mut location_state, _, mut sprite, _)) = query.get_mut(locations.0[&loc]) {
                 *location_state = LocationState::Selectable;
-                sprite.color = Color::YELLOW;
+                sprite.color = Color::ORANGE_RED;
             }
         }
     }
@@ -264,7 +264,7 @@ pub fn location_selected(
         if let Ok((mut sprite, connected_locations, encounter, mut state)) =
             query.get_mut(locations.0[&ev.0])
         {
-            sprite.color = Color::GREEN;
+            sprite.color = Color::MAROON;
             *state = LocationState::Current;
 
             if let Some(food) = encounter.food {
@@ -290,7 +290,7 @@ pub fn location_selected(
 
             for loc in connected_locations.0.clone() {
                 if let Ok((mut sprite, _, _, mut state)) = query.get_mut(locations.0[&loc]) {
-                    sprite.color = Color::YELLOW;
+                    sprite.color = Color::ORANGE_RED;
                     *state = LocationState::Selectable;
                 }
             }
