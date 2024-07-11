@@ -100,7 +100,7 @@ pub fn location_configs() -> HashMap<LocationId, LocationConfig> {
             location_id: LocationId(4),
             position: Vec3::new(-450., 320., 2.),
             encounter: EncounterConfig {
-                text: "A steep hill lies to the north-west. It will be a tiring climb, but the vantage point may be worthwhile".to_string(),
+                text: "A steep hill lies to the north-east. It will be a tiring climb, but the vantage point may be worthwhile".to_string(),
                 options: vec![EncounterOptionConfig {
                     text: "Continue on".to_string(),
                     food: None,
@@ -142,7 +142,7 @@ pub fn location_configs() -> HashMap<LocationId, LocationConfig> {
             location_id: LocationId(6),
             position: Vec3::new(-894., 332., 2.),
             encounter: EncounterConfig {
-                text: "The forest is think with fallen trees and navigation is difficult. At least there are plenty of stick to collect. -1 food -1 water +7 wood".to_string(),
+                text: "The forest is thick with fallen trees and navigation is difficult. At least there are plenty of sticks to collect".to_string(),
                 options: vec![EncounterOptionConfig {
                     text: "Collect sticks -1 food -1 water +7 wood".to_string(),
                     food: Some(-1),
@@ -182,7 +182,7 @@ pub fn location_configs() -> HashMap<LocationId, LocationConfig> {
             location_id: LocationId(8),
             position: Vec3::new(-64., 418., 2.),
             encounter: EncounterConfig {
-                text: "The base of a steep hill.".to_string(),
+                text: "The base of a steep hill".to_string(),
                 options: vec![EncounterOptionConfig {
                     text: "Continue on".to_string(),
                     food: None,
@@ -203,7 +203,7 @@ pub fn location_configs() -> HashMap<LocationId, LocationConfig> {
                 options: vec![
                     EncounterOptionConfig {
                         text:
-                            "Stop to gather some water and for some spear fishing. +6 food +7 water"
+                            "Stop to gather some water and for some spear fishing +6 food +7 water"
                                 .to_string(),
                         food: Some(6),
                         water: Some(7),
@@ -228,7 +228,7 @@ pub fn location_configs() -> HashMap<LocationId, LocationConfig> {
             encounter: EncounterConfig {
                 text: "The river is too wide to cross on foot".to_string(),
                 options: vec![EncounterOptionConfig {
-                    text: "Craft a makeshift bridge to cross the river. -5 wood".to_string(),
+                    text: "Craft a makeshift bridge to cross the river -5 wood".to_string(),
                     food: None,
                     water: None,
                     wood: Some(-5),
@@ -308,7 +308,7 @@ pub fn location_configs() -> HashMap<LocationId, LocationConfig> {
                     .to_string(),
                 options: vec![
                     EncounterOptionConfig {
-                        text: "Forage the mushrooms. +4 food".to_string(),
+                        text: "Forage the mushrooms +4 food".to_string(),
                         food: Some(4),
                         water: None,
                         wood: None,
@@ -333,7 +333,7 @@ pub fn location_configs() -> HashMap<LocationId, LocationConfig> {
                 text: "Deep in the forest, scattered sticks lie at your feet. ".to_string(),
                 options: vec![
                     EncounterOptionConfig {
-                        text: "Pick up sticks as you pass through. +5 wood".to_string(),
+                        text: "Pick up sticks as you pass through +5 wood".to_string(),
                         food: None,
                         water: None,
                         wood: Some(5),
@@ -374,7 +374,7 @@ pub fn location_configs() -> HashMap<LocationId, LocationConfig> {
             encounter: EncounterConfig {
                 text: "You follow the tracks and they lead to a large hole in the ground. Before you have time to think you see a bear emerge from its den. You scramble to escape.".to_string(),
                 options: vec![EncounterOptionConfig {
-                    text: "Throw some food to distract it. -4 food".to_string(),
+                    text: "Throw some food to distract it -4 food".to_string(),
                     food: Some(-4),
                     water: None,
                     wood: None,
@@ -522,7 +522,7 @@ pub fn location_configs() -> HashMap<LocationId, LocationConfig> {
             location_id: LocationId(24),
             position: Vec3::new(218., 372., 2.),
             encounter: EncounterConfig {
-                text: "The river is narrower here than near upstream, and reeds rustle as the water rushes by".to_string(),
+                text: "The river is narrower here than upstream, and reeds rustle as the water rushes by".to_string(),
                 options: vec![EncounterOptionConfig {
                     text: "Continue on".to_string(),
                     food: None,
