@@ -9,10 +9,7 @@ use bevy::{
     ui::{node_bundles::TextBundle, PositionType, Style, Val},
 };
 
-use crate::{
-    locations::location::{CurrentLocation, LocationId},
-    PlayerResources,
-};
+use crate::{locations::location::CurrentLocation, plugin::PlayerResources};
 
 #[derive(Component)]
 pub struct GameOverText;
@@ -44,7 +41,7 @@ pub fn check_for_game_over(
     player_resources: ResMut<PlayerResources>,
 ) {
     if (player_resources.food <= 0 || player_resources.water <= 0 || player_resources.wood <= 0)
-        && current_location.0 != LocationId(0)
+        && current_location.0 != 0
     {
         *query.single_mut() = Visibility::Visible;
     }

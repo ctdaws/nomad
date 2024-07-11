@@ -1,0 +1,543 @@
+{
+  "data": [
+    {
+      "id": 0,
+      "position": {
+        "x": -656,
+        "y": -218
+      },
+      "connected_locations": [
+        1
+      ],
+      "encounter": {
+        "text": "Home, nestled between sheer cliffs and a meandering river",
+        "interactions": [
+          {
+            "text": "Venture forth"
+          }
+        ]
+      }
+    },
+    {
+      "id": 1,
+      "position": {
+        "x": -462,
+        "y": -34
+      },
+      "connected_locations": [
+        0,
+        2,
+        9,
+        10
+      ],
+      "encounter": {
+        "text": "You follow the river and find a dense thicket dotted with blackberries",
+        "interactions": [
+          {
+            "text": "Pick blackberries +5 food",
+            "food": 5
+          },
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "position": {
+        "x": -596,
+        "y": 150
+      },
+      "connected_locations": [
+        1,
+        3,
+        4
+      ],
+      "encounter": {
+        "text": "You hear it before you see it, the chattering of insects leads you to a wildflower meadow teeming with life",
+        "interactions": [
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "position": {
+        "x": -846,
+        "y": 114
+      },
+      "connected_locations": [
+        2
+      ],
+      "encounter": {
+        "text": "Home, nestled between sheer cliffs and a meandering river",
+        "interactions": [
+          {
+            "text": "Fill your waterskins +10 water",
+            "water": 10
+          },
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "position": {
+        "x": -450,
+        "y": 320
+      },
+      "connected_locations": [
+        2,
+        5,
+        7
+      ],
+      "encounter": {
+        "text": "A steep hill lies to the north-east. It will be a tiring climb, but the vantage point may be worthwhile",
+        "interactions": [
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "position": {
+        "x": -684,
+        "y": 406
+      },
+      "connected_locations": [
+        4,
+        6
+      ],
+      "encounter": {
+        "text": "You push through a small forest",
+        "interactions": [
+          {
+            "text": "Pick up sticks +5 wood",
+            "wood": 5
+          },
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "position": {
+        "x": -894,
+        "y": 332
+      },
+      "connected_locations": [
+        5
+      ],
+      "encounter": {
+        "text": "The forest is thick with fallen trees and navigation is difficult. At least there are plenty of sticks to collect",
+        "interactions": [
+          {
+            "text": "Collect sticks -1 food -1 water +7 wood",
+            "food": -1,
+            "water": -1,
+            "wood": 7
+          },
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "position": {
+        "x": -270,
+        "y": 488
+      },
+      "connected_locations": [
+        4,
+        8
+      ],
+      "encounter": {
+        "text": "You climb the hill, it's even steeper than it looked and you stop at the top for food and water. The view from here is incredible, to the south-west a stream can be seen running down the cliffside, and to the east you spot goats resting near the river",
+        "interactions": [
+          {
+            "text": "Take a break and continue on -1 food -1 water",
+            "food": -1,
+            "water": -1
+          }
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "position": {
+        "x": -64,
+        "y": 418
+      },
+      "connected_locations": [
+        7,
+        9
+      ],
+      "encounter": {
+        "text": "The base of a steep hill",
+        "interactions": [
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "position": {
+        "x": -12,
+        "y": 206
+      },
+      "connected_locations": [
+        1,
+        8,
+        10,
+        24
+      ],
+      "encounter": {
+        "text": "You spot fish swimming in the gentle river waters",
+        "interactions": [
+          {
+            "text": "Stop to gather some water and for some spear fishing +6 food +7 water",
+            "food": 6,
+            "water": 7
+          },
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "position": {
+        "x": -210,
+        "y": -8
+      },
+      "connected_locations": [
+        1,
+        9,
+        11,
+        13
+      ],
+      "encounter": {
+        "text": "The river is too wide to cross on foot",
+        "interactions": [
+          {
+            "text": "Craft a makeshift bridge to cross the river -5 wood",
+            "wood": -5
+          }
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "position": {
+        "x": -296,
+        "y": -336
+      },
+      "connected_locations": [
+        10,
+        12,
+        13
+      ],
+      "encounter": {
+        "text": "You pass a large boulder, covered in moss",
+        "interactions": [
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "position": {
+        "x": -556,
+        "y": -308
+      },
+      "connected_locations": [
+        11
+      ],
+      "encounter": {
+        "text": "You spot a cave in the cliff face, but fallen rocks make entrance impossible",
+        "interactions": [
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "position": {
+        "x": 60,
+        "y": 58
+      },
+      "connected_locations": [
+        10,
+        11,
+        14
+      ],
+      "encounter": {
+        "text": "The river bank is overgrown. You spot a kingfisher dart into the water. A small path leads to the river",
+        "interactions": [
+          {
+            "text": "Fill your waterskins +10 water",
+            "water": 10
+          },
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "position": {
+        "x": 122,
+        "y": -176
+      },
+      "connected_locations": [
+        13,
+        15
+      ],
+      "encounter": {
+        "text": "The outskirts of a forest, you spot mushrooms growing on the forest floor",
+        "interactions": [
+          {
+            "text": "Forage the mushrooms +4 food",
+            "food": 4
+          },
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 15,
+      "position": {
+        "x": 422,
+        "y": -422
+      },
+      "connected_locations": [
+        14,
+        16
+      ],
+      "encounter": {
+        "text": "Deep in the forest, scattered sticks lie at your feet. ",
+        "interactions": [
+          {
+            "text": "Pick up sticks as you pass through +5 wood",
+            "wood": 5
+          },
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 16,
+      "position": {
+        "x": 710,
+        "y": -360
+      },
+      "connected_locations": [
+        15,
+        17,
+        18
+      ],
+      "encounter": {
+        "text": "You spot large tracks running south-east but you can't identify what animal they come from",
+        "interactions": [
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 17,
+      "position": {
+        "x": 910,
+        "y": -504
+      },
+      "connected_locations": [
+        16
+      ],
+      "encounter": {
+        "text": "You follow the tracks and they lead to a large hole in the ground. Before you have time to think you see a bear emerge from its den. You scramble to escape.",
+        "interactions": [
+          {
+            "text": "Throw some food to distract it -4 food",
+            "food": -4
+          }
+        ]
+      }
+    },
+    {
+      "id": 18,
+      "position": {
+        "x": 448,
+        "y": -88
+      },
+      "connected_locations": [
+        16,
+        19
+      ],
+      "encounter": {
+        "text": "You pass an enormous charred tree stump, many times wider than the trees which surround it. Its fallen trunk is nowhere to be seen",
+        "interactions": [
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 19,
+      "position": {
+        "x": 696,
+        "y": 164
+      },
+      "connected_locations": [
+        18,
+        20,
+        21
+      ],
+      "encounter": {
+        "text": "You pass through a patch hazel trees",
+        "interactions": [
+          {
+            "text": "Harvest the hazelnuts +6 food",
+            "food": 6
+          },
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 20,
+      "position": {
+        "x": 682,
+        "y": 440
+      },
+      "connected_locations": [
+        19,
+        21,
+        22
+      ],
+      "encounter": {
+        "text": "You pass through a clearing between the forest and the river",
+        "interactions": [
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 21,
+      "position": {
+        "x": 332,
+        "y": 226
+      },
+      "connected_locations": [
+        19,
+        20,
+        22
+      ],
+      "encounter": {
+        "text": "A tree lies fallen and splintered",
+        "interactions": [
+          {
+            "text": "Harvest wood from the tree +10 wood",
+            "wood": 10
+          },
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 22,
+      "position": {
+        "x": 472,
+        "y": 412
+      },
+      "connected_locations": [
+        20,
+        21,
+        23,
+        24
+      ],
+      "encounter": {
+        "text": "The river is fast flowing here, a simple makeshift bridge isn't strong enough",
+        "interactions": [
+          {
+            "text": "Craft a sturdy bridge to cross -8 wood",
+            "wood": -8
+          }
+        ]
+      }
+    },
+    {
+      "id": 23,
+      "position": {
+        "x": 458,
+        "y": 504
+      },
+      "connected_locations": [
+        22,
+        24
+      ],
+      "encounter": {
+        "text": "A herd of goats in resting near the river",
+        "interactions": [
+          {
+            "text": "Sneak up to the herd and hunt a goat +10 food",
+            "food": 10
+          },
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 24,
+      "position": {
+        "x": 218,
+        "y": 372
+      },
+      "connected_locations": [
+        9,
+        22,
+        23
+      ],
+      "encounter": {
+        "text": "The river is narrower here than upstream, and reeds rustle as the water rushes by",
+        "interactions": [
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    }
+  ]
+}

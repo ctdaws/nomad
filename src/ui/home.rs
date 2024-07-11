@@ -17,8 +17,8 @@ use bevy::{
 };
 
 use crate::{
-    locations::location::{CurrentLocation, LocationId},
-    PlayerResources, SettlementResources,
+    locations::location::CurrentLocation,
+    plugin::{PlayerResources, SettlementResources},
 };
 
 use super::resources::{SettlementResourcesMarker, UpdateResources};
@@ -249,7 +249,7 @@ pub fn set_home_ui_visibility(
         (With<SettlementResourcesMarker>, Without<HomeUI>),
     >,
 ) {
-    if current_location.0 == LocationId(0) {
+    if current_location.0 == 0 {
         *query.single_mut() = Visibility::Visible;
         *query_settlement_resources.single_mut() = Visibility::Visible;
     } else {

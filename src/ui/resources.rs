@@ -14,7 +14,7 @@ use bevy::{
     },
 };
 
-use crate::{PlayerResources, SettlementResources};
+use crate::plugin::{PlayerResources, SettlementResources};
 
 #[derive(Component)]
 pub struct Resources;

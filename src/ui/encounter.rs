@@ -17,7 +17,7 @@ use bevy::{
     },
 };
 
-use crate::{locations::location::EncounterOption, PlayerResources};
+use crate::{locations::location, plugin::PlayerResources};
 
 use super::resources::UpdateResources;
 
@@ -33,7 +33,7 @@ pub struct EncounterButtons;
 #[derive(Event)]
 pub struct UpdateEncounter {
     pub text: String,
-    pub options: Vec<EncounterOption>,
+    pub interactions: Vec<location::Interaction>,
 }
 
 pub fn setup_encounter(mut commands: Commands) {
@@ -109,7 +109,7 @@ pub fn update_encounter(
 
         let encounter_buttons = query_encounter_buttons.single();
         commands.entity(encounter_buttons).with_children(|parent| {
-            for encounter_option in ev.options.clone() {
+            for encounter_option in ev.interactions.clone() {
                 parent
                     .spawn((
                         encounter_option.clone(),
@@ -144,7 +144,7 @@ pub fn update_encounter(
 pub fn process_encounter_button_presses(
     encounter_buttons_query: Query<(Entity, &Children), With<EncounterButtons>>,
     interaction_query: Query<
-        (&Interaction, &EncounterOption),
+        (&Interaction, &location::Interaction),
         (Changed<Interaction>, With<Button>),
     >,
     mut encounter_ui_query: Query<&mut Visibility, With<EncounterUI>>,
