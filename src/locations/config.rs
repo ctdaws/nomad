@@ -15,6 +15,7 @@ pub struct Interaction {
     pub food: Option<i32>,
     pub water: Option<i32>,
     pub wood: Option<i32>,
+    pub unlocks_location: Option<u32>,
 }
 
 #[derive(Deserialize, Debug)]

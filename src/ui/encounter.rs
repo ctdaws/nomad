@@ -4,10 +4,11 @@ use bevy::{
         entity::Entity,
         event::{Event, EventReader, EventWriter},
         query::{Changed, With},
-        system::{Commands, Query, ResMut},
+        system::{Commands, Query, Res, ResMut},
     },
     hierarchy::{BuildChildren, Children, DespawnRecursiveExt},
     render::{color::Color, view::Visibility},
+    sprite::Sprite,
     text::{Text, TextStyle},
     ui::{
         node_bundles::{ButtonBundle, NodeBundle, TextBundle},
@@ -17,7 +18,16 @@ use bevy::{
     },
 };
 
-use crate::{locations::location, plugin::PlayerResources};
+use crate::{
+    locations::{
+        events::{set_new_location_state, ShowConnectedLocations, SpawnLocationConnections},
+        location::{
+            self, ConnectedLocations, CurrentLocation, Encounter, LocationId, LocationState,
+            Locations,
+        },
+    },
+    plugin::PlayerResources,
+};
 
 use super::resources::UpdateResources;
 
@@ -145,32 +155,84 @@ pub fn update_encounter(
 }
 
 pub fn process_encounter_button_presses(
+    mut commands: Commands,
+    mut player_resources: ResMut<PlayerResources>,
+    locations: Res<Locations>,
+    current_location: Res<CurrentLocation>,
     encounter_buttons_query: Query<(Entity, &Children), With<EncounterButtons>>,
     interaction_query: Query<
         (&Interaction, &location::Interaction),
         (Changed<Interaction>, With<Button>),
     >,
     mut encounter_ui_query: Query<&mut Visibility, With<EncounterUI>>,
+    mut connected_locations_query: Query<&mut ConnectedLocations>,
+    mut sprite_and_state_query: Query<(&mut Sprite, &mut LocationState)>,
+    mut encounter_query: Query<&mut Encounter>,
     mut update_resources: EventWriter<UpdateResources>,
-    mut player_resources: ResMut<PlayerResources>,
-    mut commands: Commands,
+    mut spawn_location_connections_events: EventWriter<SpawnLocationConnections>,
+    mut show_connected_locations_events: EventWriter<ShowConnectedLocations>,
 ) {
     let mut button_pressed = false;
 
     for (_, children) in encounter_buttons_query.iter() {
         for &child in children {
-            if let Ok((interaction, encounter_option)) = interaction_query.get(child) {
+            if let Ok((interaction, encounter_interaction)) = interaction_query.get(child) {
                 if *interaction == Interaction::Pressed {
-                    if let Some(food) = encounter_option.food {
+                    if let Some(food) = encounter_interaction.food {
                         player_resources.food += food;
                     }
 
-                    if let Some(water) = encounter_option.water {
+                    if let Some(water) = encounter_interaction.water {
                         player_resources.water += water;
                     }
 
-                    if let Some(wood) = encounter_option.wood {
-                        player_resources.wood += wood;
+                    if let Some(wood) = encounter_interaction.wood {
+                        if wood < 0 && (player_resources.wood + wood < 0) {
+                            continue;
+                        } else {
+                            player_resources.wood += wood;
+                        }
+                    }
+
+                    if let Some(location_id) = encounter_interaction.unlocks_location {
+                        let mut connected_locations = connected_locations_query
+                            .get_mut(locations.0[&current_location.0])
+                            .unwrap();
+
+                        connected_locations.0.push(LocationId(location_id));
+
+                        show_connected_locations_events
+                            .send(ShowConnectedLocations(current_location.0));
+                        spawn_location_connections_events
+                            .send(SpawnLocationConnections(current_location.0));
+
+                        set_new_location_state(
+                            current_location.0,
+                            &locations,
+                            &connected_locations.0,
+                            &mut sprite_and_state_query,
+                        );
+
+                        let mut connected_locations = connected_locations_query
+                            .get_mut(locations.0[&location_id])
+                            .unwrap();
+
+                        connected_locations.0.push(LocationId(current_location.0));
+
+                        let mut encounter = encounter_query
+                            .get_mut(locations.0[&current_location.0])
+                            .unwrap();
+
+                        encounter
+                            .interactions
+                            .retain(|i| i.unlocks_location.is_none());
+
+                        let mut encounter =
+                            encounter_query.get_mut(locations.0[&location_id]).unwrap();
+
+                        encounter
+                            .interactions
+                            .retain(|i| i.unlocks_location.is_none());
                     }
 
                     update_resources.send(UpdateResources {

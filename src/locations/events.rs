@@ -16,7 +16,7 @@ use crate::{
 
 use super::{
     location::{
-        ConnectedLocations, CurrentLocation, Encounter, LocationState, Locations,
+        ConnectedLocations, CurrentLocation, Encounter, LocationId, LocationState, Locations,
         SpawnedConnections,
     },
     plugin::{
@@ -56,10 +56,10 @@ fn clear_old_location_state(
     }
 }
 
-fn set_new_location_state(
+pub fn set_new_location_state(
     location_id: u32,
     locations: &Res<Locations>,
-    connected_locations_query: &Query<&ConnectedLocations>,
+    connected_locations: &Vec<LocationId>,
     sprite_and_state_query: &mut Query<(&mut Sprite, &mut LocationState)>,
 ) {
     let location_entity = locations.0[&location_id];
@@ -69,9 +69,7 @@ fn set_new_location_state(
     sprite.color = CURRENT_LOCATION_COLOUR;
     *state = LocationState::Current;
 
-    let connected_locations = connected_locations_query.get(location_entity).unwrap();
-
-    for c in connected_locations.0.clone() {
+    for c in connected_locations.clone() {
         let (mut sprite, mut state) = sprite_and_state_query.get_mut(locations.0[&c.0]).unwrap();
         sprite.color = SELECTABLE_LOCATION_COLOUR;
         *state = LocationState::Selectable;
@@ -111,10 +109,11 @@ pub fn location_clicked(
             &mut sprite_and_state_query,
         );
 
+        let connected_locations = connected_locations_query.get(locations.0[&ev.0]).unwrap();
         set_new_location_state(
             ev.0,
             &locations,
-            &connected_locations_query,
+            &connected_locations.0,
             &mut sprite_and_state_query,
         );
 

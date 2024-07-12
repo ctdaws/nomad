@@ -57,6 +57,7 @@ pub fn setup_locations(
                             food: i.food,
                             water: i.water,
                             wood: i.wood,
+                            unlocks_location: i.unlocks_location,
                         })
                         .collect(),
                 },
@@ -77,7 +78,7 @@ pub fn setup_locations(
                         custom_size: Some(Vec2::new(30., 30.)),
                         ..Default::default()
                     },
-                    visibility: bevy::render::view::Visibility::Hidden,
+                    visibility: Visibility::Hidden,
                     ..Default::default()
                 },
             })
@@ -115,6 +116,7 @@ pub fn set_start_location(
                 food: None,
                 water: None,
                 wood: None,
+                unlocks_location: None,
             }],
         });
 

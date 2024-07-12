@@ -27,7 +27,6 @@
       "connected_locations": [
         0,
         2,
-        9,
         10
       ],
       "encounter": {
@@ -199,7 +198,6 @@
         "y": 206
       },
       "connected_locations": [
-        1,
         8,
         10,
         24
@@ -221,21 +219,23 @@
     {
       "id": 10,
       "position": {
-        "x": -210,
-        "y": -8
+        "x": -250,
+        "y": 20
       },
       "connected_locations": [
         1,
-        9,
-        11,
-        13
+        9
       ],
       "encounter": {
         "text": "The river is too wide to cross on foot",
         "interactions": [
           {
             "text": "Craft a makeshift bridge to cross the river -5 wood",
-            "wood": -5
+            "wood": -5,
+            "unlocks_location": 25
+          },
+          {
+            "text": "Continue on"
           }
         ]
       }
@@ -247,9 +247,7 @@
         "y": -336
       },
       "connected_locations": [
-        10,
-        12,
-        13
+        12
       ],
       "encounter": {
         "text": "You pass a large boulder, covered in moss",
@@ -285,8 +283,7 @@
         "y": 58
       },
       "connected_locations": [
-        10,
-        11,
+        25,
         14
       ],
       "encounter": {
@@ -438,7 +435,6 @@
       },
       "connected_locations": [
         19,
-        21,
         22
       ],
       "encounter": {
@@ -458,7 +454,6 @@
       },
       "connected_locations": [
         19,
-        20,
         22
       ],
       "encounter": {
@@ -477,21 +472,23 @@
     {
       "id": 22,
       "position": {
-        "x": 472,
-        "y": 412
+        "x": 440,
+        "y": 342
       },
       "connected_locations": [
         20,
-        21,
-        23,
-        24
+        21
       ],
       "encounter": {
         "text": "The river is fast flowing here, a simple makeshift bridge isn't strong enough",
         "interactions": [
           {
             "text": "Craft a sturdy bridge to cross -8 wood",
-            "wood": -8
+            "wood": -8,
+            "unlocks_location": 26
+          },
+          {
+            "text": "Continue on"
           }
         ]
       }
@@ -503,8 +500,7 @@
         "y": 504
       },
       "connected_locations": [
-        22,
-        24
+        26
       ],
       "encounter": {
         "text": "A herd of goats in resting near the river",
@@ -527,12 +523,59 @@
       },
       "connected_locations": [
         9,
-        22,
-        23
+        26
       ],
       "encounter": {
         "text": "The river is narrower here than upstream, and reeds rustle as the water rushes by",
         "interactions": [
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 25,
+      "position": {
+        "x": -185,
+        "y": -60
+      },
+      "connected_locations": [
+        11,
+        13
+      ],
+      "encounter": {
+        "text": "The river is narrower here than upstream, and reeds rustle as the water rushes by",
+        "interactions": [
+          {
+            "text": "Craft a makeshift bridge to cross the river -5 wood",
+            "wood": -5,
+            "unlocks_location": 10
+          },
+          {
+            "text": "Continue on"
+          }
+        ]
+      }
+    },
+    {
+      "id": 26,
+      "position": {
+        "x": 370,
+        "y": 408
+      },
+      "connected_locations": [
+        23,
+        24
+      ],
+      "encounter": {
+        "text": "The river is narrower here than upstream, and reeds rustle as the water rushes by",
+        "interactions": [
+          {
+            "text": "Craft a sturdy bridge to cross -8 wood",
+            "wood": -8,
+            "unlocks_location": 22
+          },
           {
             "text": "Continue on"
           }
