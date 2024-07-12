@@ -102,6 +102,7 @@ pub fn update_encounter(
     mut query_encounter_text: Query<&mut Text, With<EncounterText>>,
     query_encounter_buttons: Query<Entity, With<EncounterButtons>>,
     mut commands: Commands,
+    mut encounter_ui_query: Query<&mut Visibility, With<EncounterUI>>,
 ) {
     for ev in ev_reader.read() {
         let mut text = query_encounter_text.single_mut();
@@ -138,6 +139,8 @@ pub fn update_encounter(
                     });
             }
         });
+
+        *encounter_ui_query.single_mut() = Visibility::Visible;
     }
 }
 

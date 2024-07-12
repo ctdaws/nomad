@@ -18,6 +18,9 @@ use crate::{
     WINDOW_START_HEIGHT, WINDOW_START_WIDTH,
 };
 
+pub const GAME_START_TEXT: &str = "Narrowly, you and your people escaped danger through the mountain pass. In the panic you didn't have time to bring anything with you. While you've found temporary sanctuary here, the tribe will die without support. You must explore and forage for supplies if the tribe is to survive";
+pub const GAME_START_INTERACTION_TEXT: &str = "Leave camp";
+
 #[derive(Component)]
 pub struct GameCamera;
 

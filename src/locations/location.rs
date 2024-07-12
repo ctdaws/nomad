@@ -1,17 +1,17 @@
 use bevy::{
-    ecs::{bundle::Bundle, component::Component, entity::Entity, event::Event, system::Resource},
+    ecs::{bundle::Bundle, component::Component, entity::Entity, system::Resource},
     sprite::SpriteBundle,
     utils::HashMap,
 };
+
+#[derive(Resource, Default)]
+pub struct SpawnedConnections(pub Vec<(u32, u32)>);
 
 #[derive(Resource, Default)]
 pub struct Locations(pub HashMap<u32, Entity>);
 
 #[derive(Resource)]
 pub struct CurrentLocation(pub u32);
-
-#[derive(Event)]
-pub struct LocationSelected(pub u32);
 
 #[derive(Component)]
 pub struct Location;

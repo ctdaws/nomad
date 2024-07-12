@@ -12,7 +12,10 @@ use bevy::{
 };
 
 use crate::{
-    locations::location::{Location, LocationId, LocationSelected, SquareCollider},
+    locations::{
+        events::LocationClicked,
+        location::{Location, LocationId, SquareCollider},
+    },
     plugin::GameCamera,
 };
 
@@ -40,7 +43,7 @@ pub fn process_mouse_click(
     cursor_world_coords: Res<CursorWorldCoords>,
     mouse_buttons: Res<ButtonInput<MouseButton>>,
     query: Query<(&Transform, &SquareCollider, &LocationId), With<Location>>,
-    mut location_selected_events: EventWriter<LocationSelected>,
+    mut location_clicked_events: EventWriter<LocationClicked>,
 ) {
     if mouse_buttons.just_released(MouseButton::Left) {
         for (transform, collider, location_id) in &query {
@@ -52,7 +55,7 @@ pub fn process_mouse_click(
                 && (cursor_pos.y <= pos.y + collider.half_height)
                 && (cursor_pos.y >= pos.y - collider.half_height)
             {
-                location_selected_events.send(LocationSelected(location_id.0));
+                location_clicked_events.send(LocationClicked(location_id.0));
             }
         }
     }
