@@ -21,7 +21,7 @@ use super::{
     location::{
         Button, CanIgnoreEncounter, ConnectedLocations, CurrentEncounterLevel, Encounter,
         EncounterLevel, Location, LocationBundle, LocationId, LocationState, Locations,
-        ShouldRegenerateLevel, SquareCollider,
+        MaxEncounterLevel, ShouldRegenerateLevel, SquareCollider,
     },
     plugin::{
         CURRENT_LOCATION_COLOUR, LOCATION_MARKER_Z, NOT_SELECTABLE_LOCATION_COLOUR,
@@ -71,6 +71,7 @@ pub fn setup_locations(
                 id: LocationId(config.id),
                 encounter: Encounter {
                     current_level: CurrentEncounterLevel(config.encounter.starting_level),
+                    max_level: MaxEncounterLevel(config.encounter.starting_level),
                     levels: encounter_levels,
                     can_ignore_encounter: CanIgnoreEncounter(config.encounter.can_ignore_encounter),
                     should_regenerate_level: ShouldRegenerateLevel(

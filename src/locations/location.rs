@@ -35,6 +35,9 @@ pub struct Button {
 pub struct CurrentEncounterLevel(pub u32);
 
 #[derive(Component)]
+pub struct MaxEncounterLevel(pub u32);
+
+#[derive(Component)]
 pub struct EncounterLevel {
     pub encounter_text: String,
     pub button: Option<Button>,
@@ -49,6 +52,7 @@ pub struct ShouldRegenerateLevel(pub bool);
 #[derive(Component)]
 pub struct Encounter {
     pub current_level: CurrentEncounterLevel,
+    pub max_level: MaxEncounterLevel,
     pub levels: HashMap<u32, EncounterLevel>,
     pub can_ignore_encounter: CanIgnoreEncounter,
     pub should_regenerate_level: ShouldRegenerateLevel,
