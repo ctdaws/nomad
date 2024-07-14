@@ -20,8 +20,8 @@ use super::{
     events::{ShowConnectedLocations, SpawnLocationConnections},
     location::{
         Button, CanIgnoreEncounter, ConnectedLocations, CurrentEncounterLevel, Encounter,
-        EncounterLevel, EncounterLevelRegenerationCounter, Location, LocationBundle, LocationId,
-        LocationState, Locations, MaxEncounterLevel, SquareCollider,
+        EncounterLevel, EncounterLevelRegenerationCounter, EncounterLevels, Location,
+        LocationBundle, LocationId, LocationState, Locations, MaxEncounterLevel, SquareCollider,
     },
     plugin::{
         CURRENT_LOCATION_COLOUR, LOCATION_MARKER_Z, NOT_SELECTABLE_LOCATION_COLOUR,
@@ -72,7 +72,7 @@ pub fn setup_locations(
                 encounter: Encounter {
                     current_level: CurrentEncounterLevel(config.encounter.starting_level),
                     max_level: MaxEncounterLevel(config.encounter.starting_level),
-                    levels: encounter_levels,
+                    levels: EncounterLevels(encounter_levels),
                     can_ignore_encounter: CanIgnoreEncounter(config.encounter.can_ignore_encounter),
                     level_regeneration_counter: EncounterLevelRegenerationCounter(
                         if config.encounter.should_regenerate_level {
@@ -132,13 +132,14 @@ pub fn set_start_location(
 
         update_encounter_events.send(UpdateEncounter {
             text: GAME_START_TEXT.to_string(),
-            interactions: vec![Interaction {
+            button: Some(Button {
                 text: GAME_START_INTERACTION_TEXT.to_string(),
                 food: None,
                 water: None,
                 wood: None,
                 unlocks_location: None,
-            }],
+            }),
+            can_ignore_encounter: false,
         });
 
         for loc in connected_locations.0.clone() {

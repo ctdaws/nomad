@@ -12,6 +12,7 @@ use bevy::{
 };
 
 use crate::{
+    events::{advance_day, AdvanceDay},
     input::{process_mouse_click, update_cursor_position, CursorWorldCoords},
     locations::plugin::LocationsPlugin,
     ui::plugin::UIPlugin,
@@ -54,10 +55,11 @@ impl Plugin for GamePlugin {
                 water: 0,
                 wood: 0,
             })
+            .add_event::<AdvanceDay>()
             .add_systems(Startup, setup)
             .add_systems(
                 Update,
-                (update_cursor_position, process_mouse_click).chain(),
+                (update_cursor_position, process_mouse_click, advance_day).chain(),
             );
     }
 }

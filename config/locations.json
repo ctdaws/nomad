@@ -77,10 +77,7 @@
         "starting_level": 1,
         "levels": {
           "1": {
-            "encounter_text": "You hear it before you see it, the chattering of insects leads you to a wildflower meadow teeming with life",
-            "button_config": {
-              "text": "Continue on"
-            }
+            "encounter_text": "You hear it before you see it, the chattering of insects leads you to a wildflower meadow teeming with life"
           }
         }
       }

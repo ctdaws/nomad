@@ -34,6 +34,9 @@ pub struct SpawnLocationConnections(pub u32);
 #[derive(Event)]
 pub struct ShowConnectedLocations(pub u32);
 
+#[derive(Event)]
+pub struct ReduceLocationEncounterLevel(pub u32);
+
 pub fn location_clicked(
     locations: Res<Locations>,
     mut location_clicked_events: EventReader<LocationClicked>,
@@ -127,9 +130,19 @@ pub fn move_to_location(
         );
 
         let encounter = encounter_query.get(locations.0[&ev.0]).unwrap();
+
+        let (current_encounter_level, encounter_levels, can_ignore_encounter) = (
+            encounter.current_level.0,
+            encounter.levels.0.clone(),
+            encounter.can_ignore_encounter.0,
+        );
+
+        let encounter_level = encounter_levels[&current_encounter_level].clone();
+
         update_encounter_events.send(UpdateEncounter {
-            text: encounter.text.clone(),
-            interactions: encounter.interactions.clone(),
+            text: encounter_level.encounter_text.clone(),
+            button: encounter_level.button,
+            can_ignore_encounter,
         });
 
         current_location.0 = ev.0.clone();
@@ -199,6 +212,20 @@ pub fn show_connected_locations(
         for c in connected_locations.0.clone() {
             let mut visibility = visibility_query.get_mut(locations.0[&c.0]).unwrap();
             *visibility = Visibility::Visible;
+        }
+    }
+}
+
+pub fn reduce_location_encounter_level(
+    locations: Res<Locations>,
+    mut reduce_location_encounter_level_events: EventReader<ReduceLocationEncounterLevel>,
+    mut encounter_query: Query<&mut Encounter>,
+) {
+    for ev in reduce_location_encounter_level_events.read() {
+        let mut encounter = encounter_query.get_mut(locations.0[&ev.0]).unwrap();
+
+        if encounter.current_level.0 > 1 {
+            encounter.current_level.0 -= 1;
         }
     }
 }

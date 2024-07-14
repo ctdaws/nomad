@@ -29,10 +29,10 @@ impl Plugin for UIPlugin {
                 (
                     update_resources,
                     update_encounter,
+                    process_encounter_button_presses,
                     set_home_ui_visibility,
                     store_and_take_resources,
                     check_for_game_over,
-                    process_encounter_button_presses,
                 ),
             );
     }

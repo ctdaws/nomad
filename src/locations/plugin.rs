@@ -6,8 +6,9 @@ use bevy::{
 
 use super::{
     events::{
-        location_clicked, show_connected_locations, spawn_location_connections, LocationClicked,
-        ShowConnectedLocations, SpawnLocationConnections,
+        location_clicked, move_to_location, reduce_location_encounter_level,
+        show_connected_locations, spawn_location_connections, LocationClicked, MoveToLocation,
+        ReduceLocationEncounterLevel, ShowConnectedLocations, SpawnLocationConnections,
     },
     location::{CurrentLocation, Locations, SpawnedConnections},
     setup::{set_start_location, setup_locations},
@@ -29,15 +30,19 @@ impl Plugin for LocationsPlugin {
             .init_resource::<SpawnedConnections>()
             .insert_resource::<CurrentLocation>(CurrentLocation(0))
             .add_event::<LocationClicked>()
+            .add_event::<MoveToLocation>()
             .add_event::<SpawnLocationConnections>()
             .add_event::<ShowConnectedLocations>()
+            .add_event::<ReduceLocationEncounterLevel>()
             .add_systems(Startup, (setup_locations, set_start_location).chain())
             .add_systems(
                 Update,
                 (
                     location_clicked,
+                    move_to_location,
                     spawn_location_connections,
                     show_connected_locations,
+                    reduce_location_encounter_level,
                 ),
             );
     }

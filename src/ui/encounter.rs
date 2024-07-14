@@ -8,7 +8,6 @@ use bevy::{
     },
     hierarchy::{BuildChildren, Children, DespawnRecursiveExt},
     render::{color::Color, view::Visibility},
-    sprite::Sprite,
     text::{Text, TextStyle},
     ui::{
         node_bundles::{ButtonBundle, NodeBundle, TextBundle},
@@ -20,14 +19,8 @@ use bevy::{
 
 use crate::{
     locations::{
-        events::{
-            set_new_location_state, MoveToLocation, ShowConnectedLocations,
-            SpawnLocationConnections,
-        },
-        location::{
-            self, ConnectedLocations, CurrentLocation, Encounter, LocationId, LocationState,
-            Locations,
-        },
+        events::{MoveToLocation, ReduceLocationEncounterLevel},
+        location::{self, ConnectedLocations, CurrentLocation, LocationId, Locations},
     },
     plugin::PlayerResources,
 };
@@ -46,7 +39,8 @@ pub struct EncounterButtons;
 #[derive(Event)]
 pub struct UpdateEncounter {
     pub text: String,
-    pub interactions: Vec<location::Interaction>,
+    pub button: Option<location::Button>,
+    pub can_ignore_encounter: bool,
 }
 
 pub fn setup_encounter(mut commands: Commands) {
@@ -122,11 +116,12 @@ pub fn update_encounter(
         text.sections[0].value = ev.text.clone();
 
         let encounter_buttons = query_encounter_buttons.single();
+
         commands.entity(encounter_buttons).with_children(|parent| {
-            for encounter_option in ev.interactions.clone() {
+            if let Some(button) = &ev.button {
                 parent
                     .spawn((
-                        encounter_option.clone(),
+                        button.clone(),
                         ButtonBundle {
                             style: Style {
                                 width: Val::Px(700.0),
@@ -142,7 +137,36 @@ pub fn update_encounter(
                     ))
                     .with_children(|parent| {
                         parent.spawn(TextBundle::from_section(
-                            encounter_option.text.clone(),
+                            button.text.clone(),
+                            TextStyle {
+                                font_size: 30.,
+                                color: Color::WHITE,
+                                ..Default::default()
+                            },
+                        ));
+                    });
+            }
+
+            if ev.can_ignore_encounter {
+                parent
+                    .spawn((
+                        location::Button::default(),
+                        ButtonBundle {
+                            style: Style {
+                                width: Val::Px(700.0),
+                                height: Val::Px(65.0),
+                                justify_content: JustifyContent::Center,
+                                align_content: AlignContent::Center,
+                                align_items: AlignItems::Center,
+                                ..Default::default()
+                            },
+                            background_color: BackgroundColor(Color::GRAY),
+                            ..Default::default()
+                        },
+                    ))
+                    .with_children(|parent| {
+                        parent.spawn(TextBundle::from_section(
+                            "Continue on".to_string(),
                             TextStyle {
                                 font_size: 30.,
                                 color: Color::WHITE,
@@ -162,35 +186,37 @@ pub fn process_encounter_button_presses(
     mut player_resources: ResMut<PlayerResources>,
     locations: Res<Locations>,
     current_location: Res<CurrentLocation>,
-    encounter_buttons_query: Query<(Entity, &Children), With<EncounterButtons>>,
     interaction_query: Query<
-        (&Interaction, &location::Interaction),
+        (&Interaction, &location::Button),
         (Changed<Interaction>, With<Button>),
     >,
+    encounter_buttons_query: Query<(Entity, &Children), With<EncounterButtons>>,
     mut encounter_ui_query: Query<&mut Visibility, With<EncounterUI>>,
     mut connected_locations_query: Query<&mut ConnectedLocations>,
-    mut sprite_and_state_query: Query<(&mut Sprite, &mut LocationState)>,
-    mut encounter_query: Query<&mut Encounter>,
     mut update_resources: EventWriter<UpdateResources>,
-    mut spawn_location_connections_events: EventWriter<SpawnLocationConnections>,
-    mut show_connected_locations_events: EventWriter<ShowConnectedLocations>,
     mut move_to_location_events: EventWriter<MoveToLocation>,
+
+    mut reduce_location_encounter_level_events: EventWriter<ReduceLocationEncounterLevel>,
 ) {
     let mut button_pressed = false;
 
-    for (_, children) in encounter_buttons_query.iter() {
+    if let Ok((encounter_buttons_entity, children)) = encounter_buttons_query.get_single() {
         for &child in children {
-            if let Ok((interaction, encounter_interaction)) = interaction_query.get(child) {
-                if *interaction == Interaction::Pressed {
-                    if let Some(food) = encounter_interaction.food {
+            if let Ok((interaction, button)) = interaction_query.get(child) {
+                if !matches!(*interaction, Interaction::Pressed) {
+                    continue;
+                }
+
+                if *button != location::Button::default() {
+                    if let Some(food) = button.food {
                         player_resources.food += food;
                     }
 
-                    if let Some(water) = encounter_interaction.water {
+                    if let Some(water) = button.water {
                         player_resources.water += water;
                     }
 
-                    if let Some(wood) = encounter_interaction.wood {
+                    if let Some(wood) = button.wood {
                         if wood < 0 && (player_resources.wood + wood < 0) {
                             continue;
                         } else {
@@ -198,7 +224,7 @@ pub fn process_encounter_button_presses(
                         }
                     }
 
-                    if let Some(location_id) = encounter_interaction.unlocks_location {
+                    if let Some(location_id) = button.unlocks_location {
                         let mut connected_locations = connected_locations_query
                             .get_mut(locations.0[&current_location.0])
                             .unwrap();
@@ -213,21 +239,12 @@ pub fn process_encounter_button_presses(
 
                         connected_locations.0.push(LocationId(current_location.0));
 
-                        let mut encounter = encounter_query
-                            .get_mut(locations.0[&current_location.0])
-                            .unwrap();
-
-                        encounter
-                            .interactions
-                            .retain(|i| i.unlocks_location.is_none());
-
-                        let mut encounter =
-                            encounter_query.get_mut(locations.0[&location_id]).unwrap();
-
-                        encounter
-                            .interactions
-                            .retain(|i| i.unlocks_location.is_none());
+                        reduce_location_encounter_level_events
+                            .send(ReduceLocationEncounterLevel(location_id));
                     }
+
+                    reduce_location_encounter_level_events
+                        .send(ReduceLocationEncounterLevel(current_location.0));
 
                     update_resources.send(UpdateResources {
                         player_food: Some(player_resources.food),
@@ -235,17 +252,17 @@ pub fn process_encounter_button_presses(
                         player_wood: Some(player_resources.wood),
                         ..Default::default()
                     });
-
-                    *encounter_ui_query.single_mut() = Visibility::Hidden;
-                    button_pressed = true;
                 }
+
+                *encounter_ui_query.single_mut() = Visibility::Hidden;
+                button_pressed = true;
             }
         }
-    }
 
-    if button_pressed {
-        for (entity, _) in encounter_buttons_query.iter() {
-            commands.entity(entity).despawn_descendants();
+        if button_pressed {
+            commands
+                .entity(encounter_buttons_entity)
+                .despawn_descendants();
         }
     }
 }

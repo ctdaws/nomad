@@ -19,7 +19,7 @@ pub struct Location;
 #[derive(Component, Clone, Copy)]
 pub struct LocationId(pub u32);
 
-#[derive(Component)]
+#[derive(Component, Clone, PartialEq, Eq)]
 pub struct Button {
     pub text: String,
 
@@ -31,17 +31,32 @@ pub struct Button {
     pub unlocks_location: Option<u32>,
 }
 
+impl Default for Button {
+    fn default() -> Self {
+        Button {
+            text: "Continue on".to_string(),
+            food: None,
+            water: None,
+            wood: None,
+            unlocks_location: None,
+        }
+    }
+}
+
 #[derive(Component)]
 pub struct CurrentEncounterLevel(pub u32);
 
 #[derive(Component)]
 pub struct MaxEncounterLevel(pub u32);
 
-#[derive(Component)]
+#[derive(Clone)]
 pub struct EncounterLevel {
     pub encounter_text: String,
     pub button: Option<Button>,
 }
+
+#[derive(Component)]
+pub struct EncounterLevels(pub HashMap<u32, EncounterLevel>);
 
 #[derive(Component)]
 pub struct CanIgnoreEncounter(pub bool);
@@ -54,7 +69,7 @@ pub struct Encounter {
     pub current_level: CurrentEncounterLevel,
     pub max_level: MaxEncounterLevel,
     pub level_regeneration_counter: EncounterLevelRegenerationCounter,
-    pub levels: HashMap<u32, EncounterLevel>,
+    pub levels: EncounterLevels,
     pub can_ignore_encounter: CanIgnoreEncounter,
 }
 
