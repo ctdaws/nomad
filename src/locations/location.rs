@@ -19,20 +19,39 @@ pub struct Location;
 #[derive(Component, Clone, Copy)]
 pub struct LocationId(pub u32);
 
-#[derive(Component, Clone, Debug)]
-pub struct Interaction {
+#[derive(Component)]
+pub struct Button {
     pub text: String,
+
     // The amount of a resource to add/remove from the player
     pub food: Option<i32>,
     pub water: Option<i32>,
     pub wood: Option<i32>,
+
     pub unlocks_location: Option<u32>,
 }
 
 #[derive(Component)]
+pub struct CurrentEncounterLevel(pub u32);
+
+#[derive(Component)]
+pub struct EncounterLevel {
+    pub encounter_text: String,
+    pub button: Option<Button>,
+}
+
+#[derive(Component)]
+pub struct CanIgnoreEncounter(pub bool);
+
+#[derive(Component)]
+pub struct ShouldRegenerateLevel(pub bool);
+
+#[derive(Component)]
 pub struct Encounter {
-    pub text: String,
-    pub interactions: Vec<Interaction>,
+    pub current_level: CurrentEncounterLevel,
+    pub levels: HashMap<u32, EncounterLevel>,
+    pub can_ignore_encounter: CanIgnoreEncounter,
+    pub should_regenerate_level: ShouldRegenerateLevel,
 }
 
 #[derive(Component)]

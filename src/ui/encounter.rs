@@ -20,7 +20,10 @@ use bevy::{
 
 use crate::{
     locations::{
-        events::{set_new_location_state, ShowConnectedLocations, SpawnLocationConnections},
+        events::{
+            set_new_location_state, MoveToLocation, ShowConnectedLocations,
+            SpawnLocationConnections,
+        },
         location::{
             self, ConnectedLocations, CurrentLocation, Encounter, LocationId, LocationState,
             Locations,
@@ -171,6 +174,7 @@ pub fn process_encounter_button_presses(
     mut update_resources: EventWriter<UpdateResources>,
     mut spawn_location_connections_events: EventWriter<SpawnLocationConnections>,
     mut show_connected_locations_events: EventWriter<ShowConnectedLocations>,
+    mut move_to_location_events: EventWriter<MoveToLocation>,
 ) {
     let mut button_pressed = false;
 
@@ -201,17 +205,7 @@ pub fn process_encounter_button_presses(
 
                         connected_locations.0.push(LocationId(location_id));
 
-                        show_connected_locations_events
-                            .send(ShowConnectedLocations(current_location.0));
-                        spawn_location_connections_events
-                            .send(SpawnLocationConnections(current_location.0));
-
-                        set_new_location_state(
-                            current_location.0,
-                            &locations,
-                            &connected_locations.0,
-                            &mut sprite_and_state_query,
-                        );
+                        move_to_location_events.send(MoveToLocation(current_location.0));
 
                         let mut connected_locations = connected_locations_query
                             .get_mut(locations.0[&location_id])

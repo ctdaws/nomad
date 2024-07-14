@@ -10,12 +10,15 @@
         1
       ],
       "encounter": {
-        "text": "Home, nestled between sheer cliffs and a meandering river",
-        "interactions": [
-          {
-            "text": "Leave camp"
+        "starting_level": 1,
+        "levels": {
+          "1": {
+            "encounter_text": "Home, nestled between sheer cliffs and a meandering river",
+            "button_config": {
+              "text": "Leave camp"
+            }
           }
-        ]
+        }
       }
     },
     {
@@ -30,16 +33,33 @@
         10
       ],
       "encounter": {
-        "text": "You follow the river and find a dense thicket dotted with blackberries",
-        "interactions": [
-          {
-            "text": "Pick blackberries +5 food",
-            "food": 5
+        "starting_level": 4,
+        "levels": {
+          "4": {
+            "encounter_text": "You follow the river and find a dense thicket dotted with blackberries",
+            "button_config": {
+              "text": "Pick blackberries +5 food",
+              "food": 5
+            }
           },
-          {
-            "text": "Continue on"
+          "3": {
+            "encounter_text": "You follow the river and find a dense thicket. Some of the bushes have blackberries",
+            "button_config": {
+              "text": "Pick blackberries +3 food",
+              "food": 3
+            }
+          },
+          "2": {
+            "encounter_text": "You follow the river and find a dense thicket. There are a couple of blackberries in the bushes",
+            "button_config": {
+              "text": "Pick blackberries +1 food",
+              "food": 1
+            }
+          },
+          "1": {
+            "encounter_text": "You follow the river and find a dense thicket. There are no blackberries in the bushes"
           }
-        ]
+        }
       }
     },
     {
@@ -54,12 +74,15 @@
         4
       ],
       "encounter": {
-        "text": "You hear it before you see it, the chattering of insects leads you to a wildflower meadow teeming with life",
-        "interactions": [
-          {
-            "text": "Continue on"
+        "starting_level": 1,
+        "levels": {
+          "1": {
+            "encounter_text": "You hear it before you see it, the chattering of insects leads you to a wildflower meadow teeming with life",
+            "button_config": {
+              "text": "Continue on"
+            }
           }
-        ]
+        }
       }
     },
     {
@@ -72,16 +95,15 @@
         2
       ],
       "encounter": {
-        "text": "Home, nestled between sheer cliffs and a meandering river",
-        "interactions": [
-          {
-            "text": "Fill your waterskins +10 water",
-            "water": 10
-          },
-          {
-            "text": "Continue on"
+        "starting_level": 1,
+        "levels": {
+          "1": {
+            "encounter_text": "You approach the mountain, and find a freshwater stream",
+            "button_config": {
+              "text": "Fill your waterskins +10 water"
+            }
           }
-        ]
+        }
       }
     },
     {
@@ -96,12 +118,12 @@
         7
       ],
       "encounter": {
-        "text": "A steep hill lies to the north-east. It will be a tiring climb, but the vantage point may be worthwhile",
-        "interactions": [
-          {
-            "text": "Continue on"
+        "starting_level": 1,
+        "levels": {
+          "1": {
+            "encounter_text": "A steep hill lies to the north-east. It will be a tiring climb, but the vantage point may be worthwhile"
           }
-        ]
+        }
       }
     },
     {
@@ -115,16 +137,24 @@
         6
       ],
       "encounter": {
-        "text": "You push through a small forest",
-        "interactions": [
-          {
-            "text": "Pick up sticks +5 wood",
-            "wood": 5
+        "starting_level": 3,
+        "levels": {
+          "3": {
+            "encounter_text": "You push through a small forest. Sticks litter the forest floor",
+            "button_config": {
+              "text": "Pick up sticks +5 wood"
+            }
           },
-          {
-            "text": "Continue on"
+          "2": {
+            "encounter_text": "You push through a small forest. You spot a few sticks on the forest floor",
+            "button_config": {
+              "text": "Pick up sticks +3 wood"
+            }
+          },
+          "1": {
+            "encounter_text": "You push through a small forest"
           }
-        ]
+        }
       }
     },
     {
@@ -137,18 +167,39 @@
         5
       ],
       "encounter": {
-        "text": "The forest is thick with fallen trees and navigation is difficult. At least there are plenty of sticks to collect",
-        "interactions": [
-          {
-            "text": "Collect sticks -1 food -1 water +7 wood",
-            "food": -1,
-            "water": -1,
-            "wood": 7
+        "starting_level": 4,
+        "levels": {
+          "4": {
+            "encounter_text": "The forest is thick with fallen trees and navigation is difficult. At least there are plenty of sticks to collect",
+            "button_config": {
+              "text": "Collect sticks -1 food -1 water +15 wood",
+              "food": -1,
+              "water": -1,
+              "wood": 15
+            }
           },
-          {
-            "text": "Continue on"
+          "3": {
+            "encounter_text": "The forest is thick with fallen trees and navigation is difficult. A few sticks can be collected here",
+            "button_config": {
+              "text": "Collect sticks -1 food -1 water +7 wood",
+              "food": -1,
+              "water": -1,
+              "wood": 10
+            }
+          },
+          "2": {
+            "encounter_text": "The forest is thick with fallen trees and navigation is difficult. A small amount of sticks are possible to collect",
+            "button_config": {
+              "text": "Collect sticks -1 food -1 water +7 wood",
+              "food": -1,
+              "water": -1,
+              "wood": 10
+            }
+          },
+          "1": {
+            "encounter_text": "The forest is thick with fallen trees. It's too difficult to collect any sticks"
           }
-        ]
+        }
       }
     },
     {
@@ -162,14 +213,18 @@
         8
       ],
       "encounter": {
-        "text": "You climb the hill, it's even steeper than it looked and you stop at the top for food and water. The view from here is incredible, to the south-west a stream can be seen running down the cliffside, and to the east you spot goats resting near the river",
-        "interactions": [
-          {
-            "text": "Take a break and continue on -1 food -1 water",
-            "food": -1,
-            "water": -1
+        "starting_level": 1,
+        "levels": {
+          "1": {
+            "encounter_text": "You climb the hill, it's even steeper than it looked and you stop at the top for food and water. The view from here is incredible, to the south-west a stream can be seen running down the cliffside, and to the east you spot goats resting near the river",
+            "button_config": {
+              "text": "Take a break and continue on -1 food -1 water",
+              "food": -1,
+              "water": -1
+            }
           }
-        ]
+        },
+        "can_ignore_encounter": false
       }
     },
     {
@@ -183,12 +238,12 @@
         9
       ],
       "encounter": {
-        "text": "The base of a steep hill",
-        "interactions": [
-          {
-            "text": "Continue on"
+        "starting_level": 1,
+        "levels": {
+          "1": {
+            "encounter_text": "The base of a steep hill"
           }
-        ]
+        }
       }
     },
     {
@@ -203,17 +258,40 @@
         24
       ],
       "encounter": {
-        "text": "You spot fish swimming in the gentle river waters",
-        "interactions": [
-          {
-            "text": "Stop to gather some water and for some spear fishing +6 food +7 water",
-            "food": 6,
-            "water": 7
+        "starting_level": 4,
+        "levels": {
+          "4": {
+            "encounter_text": "The gentle river waters are teeming with fish",
+            "button_config": {
+              "text": "Stop to gather some water and for some spear fishing +6 food +7 water",
+              "food": 6,
+              "water": 7
+            }
           },
-          {
-            "text": "Continue on"
+          "3": {
+            "encounter_text": "The gentle river waters wash by, you spot a group of fish",
+            "button_config": {
+              "text": "Stop to gather some water and for some spear fishing +4 food +7 water",
+              "food": 4,
+              "water": 7
+            }
+          },
+          "2": {
+            "encounter_text": "The gentle river waters wash by, you spot a few fish darting upstream",
+            "button_config": {
+              "text": "Stop to gather some water and for some spear fishing +2 food +7 water",
+              "food": 2,
+              "water": 7
+            }
+          },
+          "1": {
+            "encounter_text": "The gentle river waters wash by",
+            "button_config": {
+              "text": "Stop to gather some water +7 water",
+              "water": 7
+            }
           }
-        ]
+        }
       }
     },
     {
@@ -227,17 +305,21 @@
         9
       ],
       "encounter": {
-        "text": "The river is too wide to cross on foot",
-        "interactions": [
-          {
-            "text": "Craft a makeshift bridge to cross the river -5 wood",
-            "wood": -5,
-            "unlocks_location": 25
+        "starting_level": 2,
+        "levels": {
+          "2": {
+            "encounter_text": "The river is too wide to cross on foot",
+            "button_config": {
+              "text": "Craft a makeshift bridge to cross the river -50 wood",
+              "wood": -50,
+              "unlocks_location": 25
+            }
           },
-          {
-            "text": "Continue on"
+          "1": {
+            "encounter_text": "The river is too wide to cross on foot"
           }
-        ]
+        },
+        "should_regenerate_level": false
       }
     },
     {
@@ -250,12 +332,12 @@
         12
       ],
       "encounter": {
-        "text": "You pass a large boulder, covered in moss",
-        "interactions": [
-          {
-            "text": "Continue on"
+        "starting_level": 1,
+        "levels": {
+          "1": {
+            "encounter_text": "You pass a large boulder, covered in moss"
           }
-        ]
+        }
       }
     },
     {
@@ -268,12 +350,12 @@
         11
       ],
       "encounter": {
-        "text": "You spot a cave in the cliff face, but fallen rocks make entrance impossible",
-        "interactions": [
-          {
-            "text": "Continue on"
+        "starting_level": 1,
+        "levels": {
+          "1": {
+            "encounter_text": "You spot a cave in the cliff face, but fallen rocks make entrance impossible"
           }
-        ]
+        }
       }
     },
     {
@@ -287,16 +369,16 @@
         14
       ],
       "encounter": {
-        "text": "The river bank is overgrown. You spot a kingfisher dart into the water. A small path leads to the river",
-        "interactions": [
-          {
-            "text": "Fill your waterskins +10 water",
-            "water": 10
-          },
-          {
-            "text": "Continue on"
+        "starting_level": 1,
+        "levels": {
+          "1": {
+            "encounter_text": "The river bank is overgrown. You spot a kingfisher dart into the water. A small path leads to the river",
+            "button_config": {
+              "text": "Fill your waterskins +10 water",
+              "water": 10
+            }
           }
-        ]
+        }
       }
     },
     {
@@ -310,16 +392,25 @@
         15
       ],
       "encounter": {
-        "text": "The outskirts of a forest, you spot mushrooms growing on the forest floor",
-        "interactions": [
-          {
-            "text": "Forage the mushrooms +4 food",
-            "food": 4
+        "starting_level": 3,
+        "levels": {
+          "3": {
+            "encounter_text": "The outskirts of a forest, you spot mushrooms growing on the forest floor",
+            "button_config": {
+              "text": "Forage the mushrooms +4 food",
+              "food": 4
+            }
           },
-          {
-            "text": "Continue on"
+          "2": {
+            "encounter_text": "The outskirts of a forest, you spot a couple of mushrooms growing on the forest floor",
+            "button_config": {
+              "text": "Forage the mushrooms +2 food"
+            }
+          },
+          "1": {
+            "encounter_text": "The outskirts of a forest"
           }
-        ]
+        }
       }
     },
     {
@@ -333,16 +424,26 @@
         16
       ],
       "encounter": {
-        "text": "Deep in the forest, scattered sticks lie at your feet. ",
-        "interactions": [
-          {
-            "text": "Pick up sticks as you pass through +5 wood",
-            "wood": 5
+        "starting_level": 3,
+        "levels": {
+          "3": {
+            "encounter_text": "Deep in the forest, scattered sticks lie at your feet",
+            "button_config": {
+              "text": "Pick up sticks as you pass through +5 wood",
+              "wood": 5
+            }
           },
-          {
-            "text": "Continue on"
+          "2": {
+            "encounter_text": "Deep in the forest, you spot a few sticks as you pass",
+            "button_config": {
+              "text": "Pick up sticks as you pass through +3 wood",
+              "wood": 3
+            }
+          },
+          "1": {
+            "encounter_text": "Deep in the forest, the forest floor looks bare"
           }
-        ]
+        }
       }
     },
     {
@@ -357,12 +458,12 @@
         18
       ],
       "encounter": {
-        "text": "You spot large tracks running south-east but you can't identify what animal they come from",
-        "interactions": [
-          {
-            "text": "Continue on"
+        "starting_level": 1,
+        "levels": {
+          "1": {
+            "encounter_text": "You spot large tracks running south-east but you can't identify what animal they come from"
           }
-        ]
+        }
       }
     },
     {
@@ -375,13 +476,16 @@
         16
       ],
       "encounter": {
-        "text": "You follow the tracks and they lead to a large hole in the ground. Before you have time to think you see a bear emerge from its den. You scramble to escape.",
-        "interactions": [
-          {
-            "text": "Throw some food to distract it -4 food",
-            "food": -4
+        "starting_level": 1,
+        "levels": {
+          "1": {
+            "encounter_text": "You follow the tracks and they lead to a large hole in the ground. Before you have time to think you see a bear emerge from its den. You scramble to escape.",
+            "button_config": {
+              "text": "Throw some food to distract it -4 food",
+              "food": -4
+            }
           }
-        ]
+        }
       }
     },
     {
@@ -395,12 +499,12 @@
         19
       ],
       "encounter": {
-        "text": "You pass an enormous charred tree stump, many times wider than the trees which surround it. Its fallen trunk is nowhere to be seen",
-        "interactions": [
-          {
-            "text": "Continue on"
+        "starting_level": 1,
+        "levels": {
+          "1": {
+            "encounter_text": "You pass an enormous charred tree stump, many times wider than the trees which surround it. Its fallen trunk is nowhere to be seen"
           }
-        ]
+        }
       }
     },
     {
@@ -415,16 +519,33 @@
         21
       ],
       "encounter": {
-        "text": "You pass through a patch hazel trees",
-        "interactions": [
-          {
-            "text": "Harvest the hazelnuts +6 food",
-            "food": 6
+        "starting_level": 4,
+        "levels": {
+          "4": {
+            "encounter_text": "You pass through a patch hazel trees, they are covered in hazelnuts",
+            "button_config": {
+              "text": "Harvest the hazelnuts +6 food",
+              "food": 6
+            }
           },
-          {
-            "text": "Continue on"
+          "3": {
+            "encounter_text": "You pass through a patch hazel trees, some trees are covered in hazelnuts",
+            "button_config": {
+              "text": "Harvest the hazelnuts +4 food",
+              "food": 4
+            }
+          },
+          "2": {
+            "encounter_text": "You pass through a patch hazel trees, a couple of trees have hazelnuts",
+            "button_config": {
+              "text": "Harvest the hazelnuts +2 food",
+              "food": 2
+            }
+          },
+          "1": {
+            "encounter_text": "You pass through a patch hazel trees"
           }
-        ]
+        }
       }
     },
     {
@@ -438,12 +559,12 @@
         22
       ],
       "encounter": {
-        "text": "You pass through a clearing between the forest and the river",
-        "interactions": [
-          {
-            "text": "Continue on"
+        "starting_level": 1,
+        "levels": {
+          "1": {
+            "encounter_text": "You pass through a clearing between the forest and the river"
           }
-        ]
+        }
       }
     },
     {
@@ -457,16 +578,34 @@
         22
       ],
       "encounter": {
-        "text": "A tree lies fallen and splintered",
-        "interactions": [
-          {
-            "text": "Harvest wood from the tree +10 wood",
-            "wood": 10
+        "starting_level": 4,
+        "levels": {
+          "4": {
+            "encounter_text": "A tree lies fallen and splintered, there is much to harvest",
+            "button_config": {
+              "text": "Harvest wood from the tree +15 wood",
+              "wood": 15
+            }
           },
-          {
-            "text": "Continue on"
+          "3": {
+            "encounter_text": "A tree lies fallen and splintered, some of the smaller pieces can be harvested",
+            "button_config": {
+              "text": "Harvest wood from the tree +10 wood",
+              "wood": 10
+            }
+          },
+          "2": {
+            "encounter_text": "A tree lies fallen and splintered, a few sticks can be harvested",
+            "button_config": {
+              "text": "Harvest wood from the tree +5 wood",
+              "wood": 5
+            }
+          },
+          "1": {
+            "encounter_text": "A tree lies fallen and splintered, there are no small pieces to harvest"
           }
-        ]
+        },
+        "should_regenerate_level": false
       }
     },
     {
@@ -480,17 +619,21 @@
         21
       ],
       "encounter": {
-        "text": "The river is fast flowing here, a simple makeshift bridge isn't strong enough",
-        "interactions": [
-          {
-            "text": "Craft a sturdy bridge to cross -8 wood",
-            "wood": -8,
-            "unlocks_location": 26
+        "starting_level": 2,
+        "levels": {
+          "2": {
+            "encounter_text": "The river is fast flowing here, a simple makeshift bridge isn't strong enough",
+            "button_config": {
+              "text": "Craft a sturdy bridge to cross -80 wood",
+              "wood": -80,
+              "unlocks_location": 26
+            }
           },
-          {
-            "text": "Continue on"
+          "1": {
+            "encounter_text": "The river is fast flowing"
           }
-        ]
+        },
+        "should_regenerate_level": false
       }
     },
     {
@@ -503,16 +646,19 @@
         26
       ],
       "encounter": {
-        "text": "A herd of goats in resting near the river",
-        "interactions": [
-          {
-            "text": "Sneak up to the herd and hunt a goat +10 food",
-            "food": 10
+        "starting_level": 2,
+        "levels": {
+          "2": {
+            "encounter_text": "A herd of goats in resting near the river",
+            "button_config": {
+              "text": "Sneak up to the herd and hunt a goat +20 food",
+              "food": 20
+            }
           },
-          {
-            "text": "Continue on"
+          "1": {
+            "encounter_text": "The ground is flattened from the heard of goats that rested here, they have since moved on"
           }
-        ]
+        }
       }
     },
     {
@@ -526,12 +672,12 @@
         26
       ],
       "encounter": {
-        "text": "The river is narrower here than upstream, and reeds rustle as the water rushes by",
-        "interactions": [
-          {
-            "text": "Continue on"
+        "starting_level": 1,
+        "levels": {
+          "1": {
+            "encounter_text": "The river is narrower here than upstream, and reeds rustle as the water rushes by"
           }
-        ]
+        }
       }
     },
     {
@@ -545,17 +691,21 @@
         13
       ],
       "encounter": {
-        "text": "The river is narrower here than upstream, and reeds rustle as the water rushes by",
-        "interactions": [
-          {
-            "text": "Craft a makeshift bridge to cross the river -5 wood",
-            "wood": -5,
-            "unlocks_location": 10
+        "starting_level": 2,
+        "levels": {
+          "2": {
+            "encounter_text": "The river is too wide to cross on foot",
+            "button_config": {
+              "text": "Craft a makeshift bridge to cross the river -50 wood",
+              "wood": -50,
+              "unlocks_location": 10
+            }
           },
-          {
-            "text": "Continue on"
+          "1": {
+            "encounter_text": "The river is too wide to cross on foot"
           }
-        ]
+        },
+        "should_regenerate_level": false
       }
     },
     {
@@ -569,17 +719,21 @@
         24
       ],
       "encounter": {
-        "text": "The river is narrower here than upstream, and reeds rustle as the water rushes by",
-        "interactions": [
-          {
-            "text": "Craft a sturdy bridge to cross -8 wood",
-            "wood": -8,
-            "unlocks_location": 22
+        "starting_level": 2,
+        "levels": {
+          "2": {
+            "encounter_text": "The river is fast flowing here, a simple makeshift bridge isn't strong enough",
+            "button_config": {
+              "text": "Craft a sturdy bridge to cross -80 wood",
+              "wood": -80,
+              "unlocks_location": 26
+            }
           },
-          {
-            "text": "Continue on"
+          "1": {
+            "encounter_text": "The river is fast flowing"
           }
-        ]
+        },
+        "should_regenerate_level": false
       }
     }
   ]

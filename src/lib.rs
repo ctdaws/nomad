@@ -14,6 +14,7 @@ pub mod ui {
     pub mod plugin;
     pub mod resources;
 }
+pub mod events;
 
 pub const WINDOW_START_WIDTH: f32 = 1920.;
 pub const WINDOW_START_HEIGHT: f32 = 1080.;

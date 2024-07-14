@@ -7,6 +7,7 @@ use bevy::{
     render::view::Visibility,
     sprite::{Sprite, SpriteBundle},
     transform::components::Transform,
+    utils::HashMap,
 };
 
 use crate::{
@@ -18,8 +19,9 @@ use super::{
     config::load_locations,
     events::{ShowConnectedLocations, SpawnLocationConnections},
     location::{
-        ConnectedLocations, Encounter, Interaction, Location, LocationBundle, LocationId,
-        LocationState, Locations, SquareCollider,
+        Button, CanIgnoreEncounter, ConnectedLocations, CurrentEncounterLevel, Encounter,
+        EncounterLevel, Location, LocationBundle, LocationId, LocationState, Locations,
+        ShouldRegenerateLevel, SquareCollider,
     },
     plugin::{
         CURRENT_LOCATION_COLOUR, LOCATION_MARKER_Z, NOT_SELECTABLE_LOCATION_COLOUR,
@@ -42,24 +44,38 @@ pub fn setup_locations(
             .map(|c| LocationId(*c))
             .collect::<Vec<_>>();
 
+        let mut encounter_levels = HashMap::<u32, EncounterLevel>::new();
+        for (level, level_config) in config.encounter.levels {
+            let button = level_config.button_config.map(|b| Button {
+                text: b.text,
+                food: b.food,
+                water: b.water,
+                wood: b.wood,
+                unlocks_location: b.unlocks_location,
+            });
+
+            let level = level.parse::<u32>().unwrap();
+
+            encounter_levels.insert(
+                level,
+                EncounterLevel {
+                    encounter_text: level_config.encounter_text,
+                    button,
+                },
+            );
+        }
+
         let entity = commands
             .spawn(LocationBundle {
                 marker: Location,
                 id: LocationId(config.id),
                 encounter: Encounter {
-                    text: config.encounter.text,
-                    interactions: config
-                        .encounter
-                        .interactions
-                        .iter()
-                        .map(|i| Interaction {
-                            text: i.text.clone(),
-                            food: i.food,
-                            water: i.water,
-                            wood: i.wood,
-                            unlocks_location: i.unlocks_location,
-                        })
-                        .collect(),
+                    current_level: CurrentEncounterLevel(config.encounter.starting_level),
+                    levels: encounter_levels,
+                    can_ignore_encounter: CanIgnoreEncounter(config.encounter.can_ignore_encounter),
+                    should_regenerate_level: ShouldRegenerateLevel(
+                        config.encounter.should_regenerate_level,
+                    ),
                 },
                 state: LocationState::NotSelectable,
                 connected_locations: ConnectedLocations(connected_locations),

@@ -9,14 +9,11 @@ use bevy::{
     transform::components::Transform,
 };
 
-use crate::{
-    plugin::PlayerResources,
-    ui::{encounter::UpdateEncounter, resources::UpdateResources},
-};
+use crate::{events::AdvanceDay, ui::encounter::UpdateEncounter};
 
 use super::{
     location::{
-        ConnectedLocations, CurrentLocation, Encounter, LocationId, LocationState, Locations,
+        ConnectedLocations, CurrentLocation, Encounter, LocationState, Locations,
         SpawnedConnections,
     },
     plugin::{
@@ -29,10 +26,32 @@ use super::{
 pub struct LocationClicked(pub u32);
 
 #[derive(Event)]
+pub struct MoveToLocation(pub u32);
+
+#[derive(Event)]
 pub struct SpawnLocationConnections(pub u32);
 
 #[derive(Event)]
 pub struct ShowConnectedLocations(pub u32);
+
+pub fn location_clicked(
+    locations: Res<Locations>,
+    mut location_clicked_events: EventReader<LocationClicked>,
+    mut move_to_location_events: EventWriter<MoveToLocation>,
+    mut advance_day_events: EventWriter<AdvanceDay>,
+    location_state_query: Query<&LocationState>,
+) {
+    for ev in location_clicked_events.read() {
+        let state = location_state_query.get(locations.0[&ev.0]).unwrap();
+
+        if !matches!(*state, LocationState::Selectable) {
+            continue;
+        }
+
+        move_to_location_events.send(MoveToLocation(ev.0));
+        advance_day_events.send(AdvanceDay);
+    }
+}
 
 fn clear_old_location_state(
     location_id: u32,
@@ -59,7 +78,7 @@ fn clear_old_location_state(
 pub fn set_new_location_state(
     location_id: u32,
     locations: &Res<Locations>,
-    connected_locations: &Vec<LocationId>,
+    connected_locations_query: &Query<&ConnectedLocations>,
     sprite_and_state_query: &mut Query<(&mut Sprite, &mut LocationState)>,
 ) {
     let location_entity = locations.0[&location_id];
@@ -69,19 +88,19 @@ pub fn set_new_location_state(
     sprite.color = CURRENT_LOCATION_COLOUR;
     *state = LocationState::Current;
 
-    for c in connected_locations.clone() {
+    let connected_locations = connected_locations_query.get(location_entity).unwrap();
+
+    for c in connected_locations.0.clone() {
         let (mut sprite, mut state) = sprite_and_state_query.get_mut(locations.0[&c.0]).unwrap();
         sprite.color = SELECTABLE_LOCATION_COLOUR;
         *state = LocationState::Selectable;
     }
 }
 
-pub fn location_clicked(
+pub fn move_to_location(
     locations: Res<Locations>,
     mut current_location: ResMut<CurrentLocation>,
-    mut player_resources: ResMut<PlayerResources>,
-    mut location_selected_events: EventReader<LocationClicked>,
-    mut update_resources_events: EventWriter<UpdateResources>,
+    mut move_to_location_events: EventReader<MoveToLocation>,
     mut update_encounter_events: EventWriter<UpdateEncounter>,
     mut spawn_location_connections_events: EventWriter<SpawnLocationConnections>,
     mut show_connected_locations_events: EventWriter<ShowConnectedLocations>,
@@ -89,16 +108,7 @@ pub fn location_clicked(
     mut sprite_and_state_query: Query<(&mut Sprite, &mut LocationState)>,
     encounter_query: Query<&Encounter>,
 ) {
-    for ev in location_selected_events.read() {
-        let (_, state) = sprite_and_state_query.get_mut(locations.0[&ev.0]).unwrap();
-
-        if matches!(
-            *state,
-            LocationState::Current | LocationState::NotSelectable
-        ) {
-            return;
-        }
-
+    for ev in move_to_location_events.read() {
         show_connected_locations_events.send(ShowConnectedLocations(ev.0));
         spawn_location_connections_events.send(SpawnLocationConnections(ev.0));
 
@@ -109,22 +119,12 @@ pub fn location_clicked(
             &mut sprite_and_state_query,
         );
 
-        let connected_locations = connected_locations_query.get(locations.0[&ev.0]).unwrap();
         set_new_location_state(
             ev.0,
             &locations,
-            &connected_locations.0,
+            &connected_locations_query,
             &mut sprite_and_state_query,
         );
-
-        player_resources.food -= 1;
-        player_resources.water -= 1;
-
-        update_resources_events.send(UpdateResources {
-            player_food: Some(player_resources.food),
-            player_water: Some(player_resources.water),
-            ..Default::default()
-        });
 
         let encounter = encounter_query.get(locations.0[&ev.0]).unwrap();
         update_encounter_events.send(UpdateEncounter {

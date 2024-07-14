@@ -1,5 +1,6 @@
 use std::{fs::File, io::Read};
 
+use bevy::utils::HashMap;
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
@@ -9,19 +10,39 @@ pub struct Position {
 }
 
 #[derive(Deserialize, Debug)]
-pub struct Interaction {
+pub struct ButtonConfig {
     pub text: String,
+
     // The amount of a resource to add/remove from the player
     pub food: Option<i32>,
     pub water: Option<i32>,
     pub wood: Option<i32>,
+
     pub unlocks_location: Option<u32>,
 }
 
 #[derive(Deserialize, Debug)]
+pub struct EncounterLevel {
+    pub encounter_text: String,
+    pub button_config: Option<ButtonConfig>,
+}
+
+fn can_ignore_encounter_default() -> bool {
+    true
+}
+
+fn should_regenerate_level_default() -> bool {
+    true
+}
+
+#[derive(Deserialize, Debug)]
 pub struct Encounter {
-    pub text: String,
-    pub interactions: Vec<Interaction>,
+    pub starting_level: u32,
+    pub levels: HashMap<String, EncounterLevel>,
+    #[serde(default = "can_ignore_encounter_default")]
+    pub can_ignore_encounter: bool,
+    #[serde(default = "should_regenerate_level_default")]
+    pub should_regenerate_level: bool,
 }
 
 #[derive(Deserialize, Debug)]
