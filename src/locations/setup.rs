@@ -20,8 +20,8 @@ use super::{
     events::{ShowConnectedLocations, SpawnLocationConnections},
     location::{
         Button, CanIgnoreEncounter, ConnectedLocations, CurrentEncounterLevel, Encounter,
-        EncounterLevel, Location, LocationBundle, LocationId, LocationState, Locations,
-        MaxEncounterLevel, ShouldRegenerateLevel, SquareCollider,
+        EncounterLevel, EncounterLevelRegenerationCounter, Location, LocationBundle, LocationId,
+        LocationState, Locations, MaxEncounterLevel, SquareCollider,
     },
     plugin::{
         CURRENT_LOCATION_COLOUR, LOCATION_MARKER_Z, NOT_SELECTABLE_LOCATION_COLOUR,
@@ -74,8 +74,12 @@ pub fn setup_locations(
                     max_level: MaxEncounterLevel(config.encounter.starting_level),
                     levels: encounter_levels,
                     can_ignore_encounter: CanIgnoreEncounter(config.encounter.can_ignore_encounter),
-                    should_regenerate_level: ShouldRegenerateLevel(
-                        config.encounter.should_regenerate_level,
+                    level_regeneration_counter: EncounterLevelRegenerationCounter(
+                        if config.encounter.should_regenerate_level {
+                            Some(0)
+                        } else {
+                            None
+                        },
                     ),
                 },
                 state: LocationState::NotSelectable,

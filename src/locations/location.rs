@@ -47,15 +47,15 @@ pub struct EncounterLevel {
 pub struct CanIgnoreEncounter(pub bool);
 
 #[derive(Component)]
-pub struct ShouldRegenerateLevel(pub bool);
+pub struct EncounterLevelRegenerationCounter(pub Option<u32>);
 
 #[derive(Component)]
 pub struct Encounter {
     pub current_level: CurrentEncounterLevel,
     pub max_level: MaxEncounterLevel,
+    pub level_regeneration_counter: EncounterLevelRegenerationCounter,
     pub levels: HashMap<u32, EncounterLevel>,
     pub can_ignore_encounter: CanIgnoreEncounter,
-    pub should_regenerate_level: ShouldRegenerateLevel,
 }
 
 #[derive(Component)]
