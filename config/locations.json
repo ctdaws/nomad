@@ -18,7 +18,8 @@
               "text": "Leave camp"
             }
           }
-        }
+        },
+        "can_ignore_encounter": false
       }
     },
     {
@@ -178,7 +179,7 @@
           "3": {
             "encounter_text": "The forest is thick with fallen trees and navigation is difficult. A few sticks can be collected here",
             "button_config": {
-              "text": "Collect sticks -1 food -1 water +7 wood",
+              "text": "Collect sticks -1 food -1 water +10 wood",
               "food": -1,
               "water": -1,
               "wood": 10
@@ -187,10 +188,10 @@
           "2": {
             "encounter_text": "The forest is thick with fallen trees and navigation is difficult. A small amount of sticks are possible to collect",
             "button_config": {
-              "text": "Collect sticks -1 food -1 water +7 wood",
+              "text": "Collect sticks -1 food -1 water +5 wood",
               "food": -1,
               "water": -1,
-              "wood": 10
+              "wood": 5
             }
           },
           "1": {
@@ -307,8 +308,8 @@
           "2": {
             "encounter_text": "The river is too wide to cross on foot",
             "button_config": {
-              "text": "Craft a makeshift bridge to cross the river -50 wood",
-              "wood": -50,
+              "text": "Craft a makeshift bridge to cross the river -20 wood",
+              "wood": -20,
               "unlocks_location": 25
             }
           },
@@ -621,8 +622,8 @@
           "2": {
             "encounter_text": "The river is fast flowing here, a simple makeshift bridge isn't strong enough",
             "button_config": {
-              "text": "Craft a sturdy bridge to cross -80 wood",
-              "wood": -80,
+              "text": "Craft a sturdy bridge to cross -30 wood",
+              "wood": -30,
               "unlocks_location": 26
             }
           },
@@ -693,8 +694,8 @@
           "2": {
             "encounter_text": "The river is too wide to cross on foot",
             "button_config": {
-              "text": "Craft a makeshift bridge to cross the river -50 wood",
-              "wood": -50,
+              "text": "Craft a makeshift bridge to cross the river -20 wood",
+              "wood": -20,
               "unlocks_location": 10
             }
           },
@@ -721,8 +722,8 @@
           "2": {
             "encounter_text": "The river is fast flowing here, a simple makeshift bridge isn't strong enough",
             "button_config": {
-              "text": "Craft a sturdy bridge to cross -80 wood",
-              "wood": -80,
+              "text": "Craft a sturdy bridge to cross -30 wood",
+              "wood": -30,
               "unlocks_location": 26
             }
           },

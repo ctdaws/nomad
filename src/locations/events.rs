@@ -9,7 +9,13 @@ use bevy::{
     transform::components::Transform,
 };
 
-use crate::{events::AdvanceDay, ui::encounter::UpdateEncounter};
+use crate::{
+    events::AdvanceDay,
+    ui::{
+        encounter::UpdateEncounter,
+        home::{HideOpenHomeUIButton, ShowOpenHomeUIButton},
+    },
+};
 
 use super::{
     location::{
@@ -107,6 +113,8 @@ pub fn move_to_location(
     mut update_encounter_events: EventWriter<UpdateEncounter>,
     mut spawn_location_connections_events: EventWriter<SpawnLocationConnections>,
     mut show_connected_locations_events: EventWriter<ShowConnectedLocations>,
+    mut show_open_home_ui_events: EventWriter<ShowOpenHomeUIButton>,
+    mut hide_open_home_ui_events: EventWriter<HideOpenHomeUIButton>,
     connected_locations_query: Query<&ConnectedLocations>,
     mut sprite_and_state_query: Query<(&mut Sprite, &mut LocationState)>,
     encounter_query: Query<&Encounter>,
@@ -144,6 +152,14 @@ pub fn move_to_location(
             button: encounter_level.button,
             can_ignore_encounter,
         });
+
+        if ev.0 == 0 {
+            show_open_home_ui_events.send(ShowOpenHomeUIButton);
+        }
+
+        if current_location.0 == 0 {
+            hide_open_home_ui_events.send(HideOpenHomeUIButton);
+        }
 
         current_location.0 = ev.0.clone();
     }

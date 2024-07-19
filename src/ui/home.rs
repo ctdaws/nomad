@@ -1,18 +1,17 @@
 use bevy::{
     ecs::{
-        bundle::Bundle,
         component::Component,
-        event::EventWriter,
+        event::{Event, EventReader, EventWriter},
         query::{Changed, With, Without},
         system::{Commands, Query, Res, ResMut},
     },
     hierarchy::BuildChildren,
     render::{color::Color, view::Visibility},
-    text::TextStyle,
+    text::{JustifyText, TextSection, TextStyle},
     ui::{
         node_bundles::{ButtonBundle, NodeBundle, TextBundle},
-        AlignContent, AlignItems, BackgroundColor, Interaction, JustifyContent, PositionType,
-        Style, Val,
+        AlignItems, BackgroundColor, Display, FlexDirection, Interaction, JustifyContent,
+        PositionType, Style, Val,
     },
 };
 
@@ -21,7 +20,21 @@ use crate::{
     plugin::{PlayerResources, SettlementResources},
 };
 
-use super::resources::{SettlementResourcesMarker, UpdateResources};
+use super::resources::{
+    SettlementFoodText, SettlementWaterText, SettlementWoodText, UpdateResources,
+};
+
+#[derive(Event)]
+pub struct ShowOpenHomeUIButton;
+
+#[derive(Event)]
+pub struct HideOpenHomeUIButton;
+
+#[derive(Component)]
+pub struct OpenHomeUIButton;
+
+#[derive(Component)]
+pub struct CloseHomeUIButton;
 
 #[derive(Component)]
 pub struct HomeUI;
@@ -44,79 +57,79 @@ pub struct StoreWoodButton;
 #[derive(Component)]
 pub struct TakeWoodButton;
 
-#[derive(Bundle)]
-pub struct HomeUIBundle {
-    pub marker: HomeUI,
-    pub node: NodeBundle,
-}
-
 pub fn setup_home_ui(mut commands: Commands) {
     commands
-        .spawn(HomeUIBundle {
-            marker: HomeUI,
-            node: NodeBundle {
+        .spawn((
+            OpenHomeUIButton,
+            ButtonBundle {
                 style: Style {
-                    position_type: PositionType::Absolute,
-                    width: Val::Px(470.),
-                    height: Val::Px(140.),
-                    left: Val::Px(500.),
                     top: Val::Px(10.),
+                    left: Val::Px(1060.),
+                    width: Val::Px(175.),
+                    height: Val::Px(75.),
+                    justify_content: JustifyContent::Center,
+                    align_items: AlignItems::Center,
                     ..Default::default()
                 },
+                background_color: BackgroundColor(Color::GRAY),
                 ..Default::default()
             },
-        })
+        ))
+        .with_children(|parent| {
+            parent.spawn(
+                TextBundle::from_section(
+                    "Manage Settlement",
+                    TextStyle {
+                        font_size: 30.,
+                        color: Color::WHITE,
+                        ..Default::default()
+                    },
+                )
+                .with_text_justify(JustifyText::Center),
+            );
+        });
+
+    commands
+        .spawn((
+            HomeUI,
+            NodeBundle {
+                style: Style {
+                    position_type: PositionType::Absolute,
+                    width: Val::Px(800.),
+                    height: Val::Px(550.),
+                    left: Val::Px(350.),
+                    top: Val::Px(175.),
+                    ..Default::default()
+                },
+                background_color: BackgroundColor(Color::BLUE.with_a(0.75)),
+                visibility: Visibility::Hidden,
+                ..Default::default()
+            },
+        ))
         .with_children(|parent| {
             parent
                 .spawn((
-                    StoreFoodButton,
-                    ButtonBundle {
-                        style: Style {
-                            width: Val::Px(150.0),
-                            height: Val::Px(65.0),
-                            justify_content: JustifyContent::Center,
-                            align_content: AlignContent::Center,
-                            align_items: AlignItems::Center,
-                            ..Default::default()
-                        },
-                        background_color: BackgroundColor(Color::GRAY),
-                        ..Default::default()
-                    },
-                ))
-                .with_children(|parent| {
-                    parent.spawn(TextBundle::from_section(
-                        "Store 1 Food",
-                        TextStyle {
-                            font_size: 30.,
-                            color: Color::WHITE,
-                            ..Default::default()
-                        },
-                    ));
-                });
-
-            parent
-                .spawn((
-                    TakeFoodButton,
+                    CloseHomeUIButton,
                     ButtonBundle {
                         style: Style {
                             position_type: PositionType::Absolute,
-                            top: Val::Px(75.),
-                            width: Val::Px(150.0),
-                            height: Val::Px(65.0),
+                            width: Val::Px(70.),
+                            height: Val::Px(70.),
+                            right: Val::Px(10.),
+                            top: Val::Px(10.),
                             justify_content: JustifyContent::Center,
-                            align_content: AlignContent::Center,
                             align_items: AlignItems::Center,
                             ..Default::default()
                         },
-                        background_color: BackgroundColor(Color::GRAY),
+                        background_color: BackgroundColor(Color::BLACK),
                         ..Default::default()
                     },
                 ))
                 .with_children(|parent| {
                     parent.spawn(TextBundle::from_section(
-                        "Take 1 Food",
+                        "X",
                         TextStyle {
-                            font_size: 30.,
+                            font_size: 60.,
                             color: Color::WHITE,
                             ..Default::default()
                         },
@@ -124,137 +137,402 @@ pub fn setup_home_ui(mut commands: Commands) {
                 });
 
             parent
-                .spawn((
-                    StoreWaterButton,
-                    ButtonBundle {
-                        style: Style {
-                            left: Val::Px(10.),
-                            width: Val::Px(150.0),
-                            height: Val::Px(65.0),
-                            justify_content: JustifyContent::Center,
-                            align_content: AlignContent::Center,
-                            align_items: AlignItems::Center,
-                            ..Default::default()
-                        },
-                        background_color: BackgroundColor(Color::GRAY),
+                .spawn(NodeBundle {
+                    style: Style {
+                        position_type: PositionType::Absolute,
+                        width: Val::Px(650.),
+                        height: Val::Px(160.),
+                        left: Val::Px(10.),
+                        top: Val::Px(10.),
                         ..Default::default()
                     },
-                ))
+                    // background_color: BackgroundColor(Color::ORANGE),
+                    ..Default::default()
+                })
                 .with_children(|parent| {
-                    parent.spawn(TextBundle::from_section(
-                        "Store 1 Water",
-                        TextStyle {
-                            font_size: 30.,
-                            color: Color::WHITE,
-                            ..Default::default()
-                        },
-                    ));
-                });
-
-            parent
-                .spawn((
-                    TakeWaterButton,
-                    ButtonBundle {
-                        style: Style {
+                    parent.spawn(
+                        TextBundle::from_section(
+                            "Settlement Resources",
+                            TextStyle {
+                                font_size: 30.,
+                                color: Color::WHITE,
+                                ..Default::default()
+                            },
+                        )
+                        .with_style(Style {
                             position_type: PositionType::Absolute,
-                            top: Val::Px(75.),
-                            left: Val::Px(160.),
-                            width: Val::Px(150.0),
-                            height: Val::Px(65.0),
-                            justify_content: JustifyContent::Center,
-                            align_content: AlignContent::Center,
-                            align_items: AlignItems::Center,
+                            width: Val::Px(300.),
+                            height: Val::Px(30.),
+                            left: Val::Px(250.),
+                            top: Val::Px(40.),
                             ..Default::default()
-                        },
-                        background_color: BackgroundColor(Color::GRAY),
-                        ..Default::default()
-                    },
-                ))
-                .with_children(|parent| {
-                    parent.spawn(TextBundle::from_section(
-                        "Take 1 Water",
-                        TextStyle {
-                            font_size: 30.,
-                            color: Color::WHITE,
+                        }), // .with_background_color(Color::RED),
+                    );
+
+                    parent
+                        .spawn(NodeBundle {
+                            style: Style {
+                                position_type: PositionType::Absolute,
+                                left: Val::Px(250.),
+                                top: Val::Px(100.),
+                                width: Val::Px(300.),
+                                height: Val::Px(100.),
+                                display: Display::Flex,
+                                flex_direction: FlexDirection::Column,
+                                justify_content: JustifyContent::Center,
+                                align_items: AlignItems::Center,
+                                ..Default::default()
+                            },
+                            // background_color: BackgroundColor(Color::GREEN),
                             ..Default::default()
-                        },
-                    ));
+                        })
+                        .with_children(|parent| {
+                            parent.spawn((
+                                TextBundle::from_sections([
+                                    TextSection::new(
+                                        "Food: ",
+                                        TextStyle {
+                                            font_size: 30.,
+                                            color: Color::WHITE,
+                                            ..Default::default()
+                                        },
+                                    ),
+                                    TextSection::new(
+                                        "",
+                                        TextStyle {
+                                            font_size: 30.,
+                                            color: Color::WHITE,
+                                            ..Default::default()
+                                        },
+                                    ),
+                                ]),
+                                SettlementFoodText,
+                            ));
+
+                            parent.spawn((
+                                TextBundle::from_sections([
+                                    TextSection::new(
+                                        "Water: ",
+                                        TextStyle {
+                                            font_size: 30.,
+                                            color: Color::WHITE,
+                                            ..Default::default()
+                                        },
+                                    ),
+                                    TextSection::new(
+                                        "",
+                                        TextStyle {
+                                            font_size: 30.,
+                                            color: Color::WHITE,
+                                            ..Default::default()
+                                        },
+                                    ),
+                                ]),
+                                SettlementWaterText,
+                            ));
+
+                            parent.spawn((
+                                TextBundle::from_sections([
+                                    TextSection::new(
+                                        "Wood: ",
+                                        TextStyle {
+                                            font_size: 30.,
+                                            color: Color::WHITE,
+                                            ..Default::default()
+                                        },
+                                    ),
+                                    TextSection::new(
+                                        "",
+                                        TextStyle {
+                                            font_size: 30.,
+                                            color: Color::WHITE,
+                                            ..Default::default()
+                                        },
+                                    ),
+                                ]),
+                                SettlementWoodText,
+                            ));
+                        });
                 });
 
             parent
-                .spawn((
-                    StoreWoodButton,
-                    ButtonBundle {
-                        style: Style {
-                            left: Val::Px(20.),
-                            width: Val::Px(150.0),
-                            height: Val::Px(65.0),
-                            justify_content: JustifyContent::Center,
-                            align_content: AlignContent::Center,
-                            align_items: AlignItems::Center,
-                            ..Default::default()
-                        },
-                        background_color: BackgroundColor(Color::GRAY),
+                .spawn(NodeBundle {
+                    style: Style {
+                        position_type: PositionType::Absolute,
+                        width: Val::Px(780.),
+                        height: Val::Px(360.),
+                        left: Val::Px(10.),
+                        top: Val::Px(180.),
                         ..Default::default()
                     },
-                ))
+                    // background_color: BackgroundColor(Color::ORANGE),
+                    ..Default::default()
+                })
                 .with_children(|parent| {
-                    parent.spawn(TextBundle::from_section(
-                        "Store 1 Wood",
-                        TextStyle {
-                            font_size: 30.,
-                            color: Color::WHITE,
+                    parent
+                        .spawn(NodeBundle {
+                            style: Style {
+                                position_type: PositionType::Absolute,
+                                width: Val::Px(500.),
+                                height: Val::Px(65.),
+                                top: Val::Px(100.),
+                                left: Val::Px(145.),
+                                display: Display::Flex,
+                                justify_content: JustifyContent::SpaceBetween,
+                                ..Default::default()
+                            },
+                            // background_color: BackgroundColor(Color::PURPLE),
                             ..Default::default()
-                        },
-                    ));
-                });
+                        })
+                        .with_children(|parent| {
+                            parent
+                                .spawn((
+                                    StoreFoodButton,
+                                    ButtonBundle {
+                                        style: Style {
+                                            width: Val::Px(150.0),
+                                            height: Val::Px(65.0),
+                                            justify_content: JustifyContent::Center,
+                                            align_items: AlignItems::Center,
+                                            ..Default::default()
+                                        },
+                                        background_color: BackgroundColor(Color::GRAY),
+                                        ..Default::default()
+                                    },
+                                ))
+                                .with_children(|parent| {
+                                    parent.spawn(TextBundle::from_section(
+                                        "Store 1 Food",
+                                        TextStyle {
+                                            font_size: 30.,
+                                            color: Color::WHITE,
+                                            ..Default::default()
+                                        },
+                                    ));
+                                });
 
-            parent
-                .spawn((
-                    TakeWoodButton,
-                    ButtonBundle {
-                        style: Style {
-                            position_type: PositionType::Absolute,
-                            top: Val::Px(75.),
-                            left: Val::Px(320.),
-                            width: Val::Px(150.0),
-                            height: Val::Px(65.0),
-                            justify_content: JustifyContent::Center,
-                            align_content: AlignContent::Center,
-                            align_items: AlignItems::Center,
+                            parent
+                                .spawn((
+                                    StoreWaterButton,
+                                    ButtonBundle {
+                                        style: Style {
+                                            width: Val::Px(150.0),
+                                            height: Val::Px(65.0),
+                                            justify_content: JustifyContent::Center,
+                                            align_items: AlignItems::Center,
+                                            ..Default::default()
+                                        },
+                                        background_color: BackgroundColor(Color::GRAY),
+                                        ..Default::default()
+                                    },
+                                ))
+                                .with_children(|parent| {
+                                    parent.spawn(TextBundle::from_section(
+                                        "Store 1 Water",
+                                        TextStyle {
+                                            font_size: 30.,
+                                            color: Color::WHITE,
+                                            ..Default::default()
+                                        },
+                                    ));
+                                });
+
+                            parent
+                                .spawn((
+                                    StoreWoodButton,
+                                    ButtonBundle {
+                                        style: Style {
+                                            width: Val::Px(150.0),
+                                            height: Val::Px(65.0),
+                                            justify_content: JustifyContent::Center,
+                                            align_items: AlignItems::Center,
+                                            ..Default::default()
+                                        },
+                                        background_color: BackgroundColor(Color::GRAY),
+                                        ..Default::default()
+                                    },
+                                ))
+                                .with_children(|parent| {
+                                    parent.spawn(TextBundle::from_section(
+                                        "Store 1 Wood",
+                                        TextStyle {
+                                            font_size: 30.,
+                                            color: Color::WHITE,
+                                            ..Default::default()
+                                        },
+                                    ));
+                                });
+                        });
+
+                    parent
+                        .spawn(NodeBundle {
+                            style: Style {
+                                position_type: PositionType::Absolute,
+                                width: Val::Px(500.),
+                                height: Val::Px(65.),
+                                top: Val::Px(175.),
+                                left: Val::Px(145.),
+                                display: Display::Flex,
+                                justify_content: JustifyContent::SpaceBetween,
+                                ..Default::default()
+                            },
+                            // background_color: BackgroundColor(Color::PURPLE),
                             ..Default::default()
-                        },
-                        background_color: BackgroundColor(Color::GRAY),
-                        ..Default::default()
-                    },
-                ))
-                .with_children(|parent| {
-                    parent.spawn(TextBundle::from_section(
-                        "Take 1 Wood",
-                        TextStyle {
-                            font_size: 30.,
-                            color: Color::WHITE,
-                            ..Default::default()
-                        },
-                    ));
+                        })
+                        .with_children(|parent| {
+                            parent
+                                .spawn((
+                                    TakeFoodButton,
+                                    ButtonBundle {
+                                        style: Style {
+                                            width: Val::Px(150.0),
+                                            height: Val::Px(65.0),
+                                            justify_content: JustifyContent::Center,
+                                            align_items: AlignItems::Center,
+                                            ..Default::default()
+                                        },
+                                        background_color: BackgroundColor(Color::GRAY),
+                                        ..Default::default()
+                                    },
+                                ))
+                                .with_children(|parent| {
+                                    parent.spawn(TextBundle::from_section(
+                                        "Take 1 Food",
+                                        TextStyle {
+                                            font_size: 30.,
+                                            color: Color::WHITE,
+                                            ..Default::default()
+                                        },
+                                    ));
+                                });
+
+                            parent
+                                .spawn((
+                                    TakeWaterButton,
+                                    ButtonBundle {
+                                        style: Style {
+                                            width: Val::Px(150.0),
+                                            height: Val::Px(65.0),
+                                            justify_content: JustifyContent::Center,
+                                            align_items: AlignItems::Center,
+                                            ..Default::default()
+                                        },
+                                        background_color: BackgroundColor(Color::GRAY),
+                                        ..Default::default()
+                                    },
+                                ))
+                                .with_children(|parent| {
+                                    parent.spawn(TextBundle::from_section(
+                                        "Take 1 Water",
+                                        TextStyle {
+                                            font_size: 30.,
+                                            color: Color::WHITE,
+                                            ..Default::default()
+                                        },
+                                    ));
+                                });
+
+                            parent
+                                .spawn((
+                                    TakeWoodButton,
+                                    ButtonBundle {
+                                        style: Style {
+                                            width: Val::Px(150.0),
+                                            height: Val::Px(65.0),
+                                            justify_content: JustifyContent::Center,
+                                            align_items: AlignItems::Center,
+                                            ..Default::default()
+                                        },
+                                        background_color: BackgroundColor(Color::GRAY),
+                                        ..Default::default()
+                                    },
+                                ))
+                                .with_children(|parent| {
+                                    parent.spawn(TextBundle::from_section(
+                                        "Take 1 Wood",
+                                        TextStyle {
+                                            font_size: 30.,
+                                            color: Color::WHITE,
+                                            ..Default::default()
+                                        },
+                                    ));
+                                });
+                        });
                 });
         });
 }
 
-pub fn set_home_ui_visibility(
+pub fn open_home_ui(
     current_location: Res<CurrentLocation>,
-    mut query: Query<&mut Visibility, (With<HomeUI>, Without<SettlementResourcesMarker>)>,
-    mut query_settlement_resources: Query<
+    mut open_home_ui_button_query: Query<
+        (&Interaction, &mut Visibility),
+        (
+            Changed<Interaction>,
+            (With<OpenHomeUIButton>, Without<HomeUI>),
+        ),
+    >,
+    mut home_ui_query: Query<&mut Visibility, (With<HomeUI>, Without<OpenHomeUIButton>)>,
+) {
+    if let Ok((interaction, mut visibility)) = open_home_ui_button_query.get_single_mut() {
+        if matches!(*interaction, Interaction::Pressed) && current_location.0 == 0 {
+            *home_ui_query.single_mut() = Visibility::Visible;
+            *visibility = Visibility::Hidden;
+        }
+    }
+}
+
+pub fn close_home_ui(
+    close_home_ui_button_query: Query<
+        &Interaction,
+        (
+            Changed<Interaction>,
+            (
+                With<CloseHomeUIButton>,
+                Without<OpenHomeUIButton>,
+                Without<HomeUI>,
+            ),
+        ),
+    >,
+    mut open_home_ui_button_query: Query<
         &mut Visibility,
-        (With<SettlementResourcesMarker>, Without<HomeUI>),
+        (
+            With<OpenHomeUIButton>,
+            Without<CloseHomeUIButton>,
+            Without<HomeUI>,
+        ),
+    >,
+    mut home_ui_query: Query<
+        &mut Visibility,
+        (
+            With<HomeUI>,
+            Without<OpenHomeUIButton>,
+            Without<CloseHomeUIButton>,
+        ),
     >,
 ) {
-    if current_location.0 == 0 {
-        *query.single_mut() = Visibility::Visible;
-        *query_settlement_resources.single_mut() = Visibility::Visible;
-    } else {
-        *query.single_mut() = Visibility::Hidden;
-        *query_settlement_resources.single_mut() = Visibility::Hidden;
+    if let Ok(interaction) = close_home_ui_button_query.get_single() {
+        if matches!(*interaction, Interaction::Pressed) {
+            *home_ui_query.single_mut() = Visibility::Hidden;
+            *open_home_ui_button_query.single_mut() = Visibility::Visible;
+        }
+    }
+}
+
+pub fn show_open_home_ui_button(
+    mut open_home_ui_button_query: Query<&mut Visibility, With<OpenHomeUIButton>>,
+    mut show_open_home_ui_events: EventReader<ShowOpenHomeUIButton>,
+) {
+    for _ in show_open_home_ui_events.read() {
+        *open_home_ui_button_query.single_mut() = Visibility::Visible;
+    }
+}
+
+pub fn hide_open_home_ui_button(
+    mut open_home_ui_button_query: Query<&mut Visibility, With<OpenHomeUIButton>>,
+    mut hide_open_home_ui_events: EventReader<HideOpenHomeUIButton>,
+) {
+    for _ in hide_open_home_ui_events.read() {
+        *open_home_ui_button_query.single_mut() = Visibility::Hidden;
     }
 }
 

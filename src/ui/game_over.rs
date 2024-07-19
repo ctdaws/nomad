@@ -40,7 +40,7 @@ pub fn check_for_game_over(
     current_location: Res<CurrentLocation>,
     player_resources: ResMut<PlayerResources>,
 ) {
-    if (player_resources.food <= 0 || player_resources.water <= 0 || player_resources.wood <= 0)
+    if (player_resources.food <= 0 || player_resources.water <= 0 || player_resources.wood < 0)
         && current_location.0 != 0
     {
         *query.single_mut() = Visibility::Visible;

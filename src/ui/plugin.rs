@@ -5,7 +5,11 @@ use super::{
         process_encounter_button_presses, setup_encounter, update_encounter, UpdateEncounter,
     },
     game_over::{check_for_game_over, setup_game_over},
-    home::{set_home_ui_visibility, setup_home_ui, store_and_take_resources},
+    home::{
+        close_home_ui, hide_open_home_ui_button, open_home_ui, setup_home_ui,
+        show_open_home_ui_button, store_and_take_resources, HideOpenHomeUIButton,
+        ShowOpenHomeUIButton,
+    },
     resources::{setup_resources, update_resources, UpdateResources},
 };
 
@@ -15,6 +19,8 @@ impl Plugin for UIPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<UpdateResources>()
             .add_event::<UpdateEncounter>()
+            .add_event::<ShowOpenHomeUIButton>()
+            .add_event::<HideOpenHomeUIButton>()
             .add_systems(
                 Startup,
                 (
@@ -30,9 +36,12 @@ impl Plugin for UIPlugin {
                     update_resources,
                     update_encounter,
                     process_encounter_button_presses,
-                    set_home_ui_visibility,
                     store_and_take_resources,
                     check_for_game_over,
+                    open_home_ui,
+                    close_home_ui,
+                    show_open_home_ui_button,
+                    hide_open_home_ui_button,
                 ),
             );
     }

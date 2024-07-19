@@ -57,6 +57,7 @@ pub fn setup_encounter(mut commands: Commands) {
                     ..Default::default()
                 },
                 background_color: BackgroundColor(Color::BLUE.with_a(0.75)),
+                visibility: Visibility::Hidden,
                 ..Default::default()
             },
         ))

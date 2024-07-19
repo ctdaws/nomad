@@ -46,9 +46,9 @@ impl Plugin for GamePlugin {
         app.add_plugins((UIPlugin, LocationsPlugin))
             .init_resource::<CursorWorldCoords>()
             .insert_resource(PlayerResources {
-                food: 10,
-                water: 10,
-                wood: 10,
+                food: 20,
+                water: 20,
+                wood: 0,
             })
             .insert_resource(SettlementResources {
                 food: 0,
