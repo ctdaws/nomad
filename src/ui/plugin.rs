@@ -1,4 +1,9 @@
-use bevy::app::{App, Plugin, Startup, Update};
+use bevy::{
+    app::{App, Plugin, Startup, Update},
+    ecs::schedule::IntoSystemConfigs,
+};
+
+use crate::plugin::MapSet;
 
 use super::{
     encounter::{
@@ -28,7 +33,8 @@ impl Plugin for UIPlugin {
                     setup_resources,
                     setup_home_ui,
                     setup_game_over,
-                ),
+                )
+                    .in_set(MapSet),
             )
             .add_systems(
                 Update,
@@ -42,7 +48,8 @@ impl Plugin for UIPlugin {
                     close_home_ui,
                     show_open_home_ui_button,
                     hide_open_home_ui_button,
-                ),
+                )
+                    .in_set(MapSet),
             );
     }
 }

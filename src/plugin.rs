@@ -4,6 +4,7 @@ use bevy::{
     core_pipeline::core_2d::Camera2dBundle,
     ecs::{
         component::Component,
+        schedule::{common_conditions::in_state, IntoSystemSetConfigs, States, SystemSet},
         system::{Commands, Res, Resource},
     },
     prelude::IntoSystemConfigs,
@@ -25,6 +26,12 @@ pub const GAME_START_INTERACTION_TEXT: &str = "Leave camp";
 #[derive(Component)]
 pub struct GameCamera;
 
+#[derive(States, Debug, Clone, PartialEq, Eq, Hash)]
+enum GameState {
+    MapScreen,
+    Game,
+}
+
 #[derive(Resource)]
 pub struct PlayerResources {
     pub food: i32,
@@ -38,6 +45,9 @@ pub struct SettlementResources {
     pub water: i32,
     pub wood: i32,
 }
+
+#[derive(SystemSet, Debug, Clone, PartialEq, Eq, Hash)]
+pub struct MapSet;
 
 pub struct GamePlugin;
 
@@ -55,12 +65,17 @@ impl Plugin for GamePlugin {
                 water: 0,
                 wood: 0,
             })
+            .insert_state(GameState::MapScreen)
             .add_event::<AdvanceDay>()
-            .add_systems(Startup, setup)
+            .add_systems(Startup, setup.in_set(MapSet))
             .add_systems(
                 Update,
-                (update_cursor_position, process_mouse_click, advance_day).chain(),
-            );
+                (update_cursor_position, process_mouse_click, advance_day)
+                    .chain()
+                    .in_set(MapSet),
+            )
+            .configure_sets(Startup, MapSet.run_if(in_state(GameState::MapScreen)))
+            .configure_sets(Update, MapSet.run_if(in_state(GameState::MapScreen)));
     }
 }
 

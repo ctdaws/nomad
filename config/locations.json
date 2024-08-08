@@ -98,7 +98,8 @@
           "1": {
             "encounter_text": "You approach the mountain, and find a freshwater stream",
             "button_config": {
-              "text": "Fill your waterskins +10 water"
+              "text": "Fill your waterskins +10 water",
+              "water": 10
             }
           }
         }
@@ -140,13 +141,15 @@
           "3": {
             "encounter_text": "You push through a small forest. Sticks litter the forest floor",
             "button_config": {
-              "text": "Pick up sticks +5 wood"
+              "text": "Pick up sticks +5 wood",
+              "wood": 5
             }
           },
           "2": {
             "encounter_text": "You push through a small forest. You spot a few sticks on the forest floor",
             "button_config": {
-              "text": "Pick up sticks +3 wood"
+              "text": "Pick up sticks +3 wood",
+              "wood": 3
             }
           },
           "1": {
@@ -314,7 +317,7 @@
             }
           },
           "1": {
-            "encounter_text": "The river is too wide to cross on foot"
+            "encounter_text": "A makeshift bridge spans the river"
           }
         },
         "should_regenerate_level": false
@@ -327,7 +330,8 @@
         "y": -336
       },
       "connected_locations": [
-        12
+        12,
+        25
       ],
       "encounter": {
         "starting_level": 1,
@@ -483,7 +487,8 @@
               "food": -4
             }
           }
-        }
+        },
+        "can_ignore_encounter": false
       }
     },
     {
@@ -628,7 +633,7 @@
             }
           },
           "1": {
-            "encounter_text": "The river is fast flowing"
+            "encounter_text": "A sturdy bridge spans the river"
           }
         },
         "should_regenerate_level": false
@@ -700,7 +705,7 @@
             }
           },
           "1": {
-            "encounter_text": "The river is too wide to cross on foot"
+            "encounter_text": "A makeshift bridge spans the river"
           }
         },
         "should_regenerate_level": false
@@ -724,11 +729,11 @@
             "button_config": {
               "text": "Craft a sturdy bridge to cross -30 wood",
               "wood": -30,
-              "unlocks_location": 26
+              "unlocks_location": 22
             }
           },
           "1": {
-            "encounter_text": "The river is fast flowing"
+            "encounter_text": "A sturdy bridge spans the river"
           }
         },
         "should_regenerate_level": false

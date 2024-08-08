@@ -4,6 +4,8 @@ use bevy::{
     render::color::Color,
 };
 
+use crate::plugin::MapSet;
+
 use super::{
     events::{
         location_clicked, move_to_location, reduce_location_encounter_level,
@@ -34,7 +36,10 @@ impl Plugin for LocationsPlugin {
             .add_event::<SpawnLocationConnections>()
             .add_event::<ShowConnectedLocations>()
             .add_event::<ReduceLocationEncounterLevel>()
-            .add_systems(Startup, (setup_locations, set_start_location).chain())
+            .add_systems(
+                Startup,
+                (setup_locations, set_start_location).chain().in_set(MapSet),
+            )
             .add_systems(
                 Update,
                 (
@@ -43,7 +48,8 @@ impl Plugin for LocationsPlugin {
                     spawn_location_connections,
                     show_connected_locations,
                     reduce_location_encounter_level,
-                ),
+                )
+                    .in_set(MapSet),
             );
     }
 }
