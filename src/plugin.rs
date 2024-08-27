@@ -17,6 +17,7 @@ use crate::{
     input::{process_mouse_click, update_cursor_position, CursorWorldCoords},
     locations::plugin::LocationsPlugin,
     ui::plugin::UIPlugin,
+    venture::TestPlugin,
     WINDOW_START_HEIGHT, WINDOW_START_WIDTH,
 };
 
@@ -53,30 +54,33 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins((UIPlugin, LocationsPlugin))
-            .init_resource::<CursorWorldCoords>()
-            .insert_resource(PlayerResources {
-                food: 20,
-                water: 20,
-                wood: 0,
-            })
-            .insert_resource(SettlementResources {
-                food: 0,
-                water: 0,
-                wood: 0,
-            })
-            .insert_state(GameState::MapScreen)
-            .add_event::<AdvanceDay>()
-            .add_systems(Startup, setup.in_set(MapSet))
-            .add_systems(
-                Update,
-                (update_cursor_position, process_mouse_click, advance_day)
-                    .chain()
-                    .in_set(MapSet),
-            )
-            .configure_sets(Startup, MapSet.run_if(in_state(GameState::MapScreen)))
-            .configure_sets(Update, MapSet.run_if(in_state(GameState::MapScreen)));
+        app.add_plugins(TestPlugin);
     }
+    // fn build(&self, app: &mut App) {
+    //     app.add_plugins((UIPlugin, LocationsPlugin))
+    //         .init_resource::<CursorWorldCoords>()
+    //         .insert_resource(PlayerResources {
+    //             food: 20,
+    //             water: 20,
+    //             wood: 0,
+    //         })
+    //         .insert_resource(SettlementResources {
+    //             food: 0,
+    //             water: 0,
+    //             wood: 0,
+    //         })
+    //         .insert_state(GameState::MapScreen)
+    //         .add_event::<AdvanceDay>()
+    //         .add_systems(Startup, setup.in_set(MapSet))
+    //         .add_systems(
+    //             Update,
+    //             (update_cursor_position, process_mouse_click, advance_day)
+    //                 .chain()
+    //                 .in_set(MapSet),
+    //         )
+    //         .configure_sets(Startup, MapSet.run_if(in_state(GameState::MapScreen)))
+    //         .configure_sets(Update, MapSet.run_if(in_state(GameState::MapScreen)));
+    // }
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
