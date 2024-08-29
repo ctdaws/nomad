@@ -1,1 +1,1 @@
-# settlers
+# nomad

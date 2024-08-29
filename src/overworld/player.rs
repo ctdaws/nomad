@@ -11,12 +11,15 @@ use bevy::{
     render::texture::Image,
     sprite::{Sprite, SpriteBundle},
     transform::components::Transform,
+    utils::default,
 };
 
 use super::{
     collisions::{CircleCollider, SquareCollider},
     setup::OVERWORLD_PLAYER_LAYER,
 };
+
+const PLAYER_INTERACTION_RADIUS: f32 = 20.;
 
 #[derive(Component)]
 pub struct Speed(pub f32);
@@ -34,7 +37,7 @@ pub struct PlayerBundle {
 }
 
 impl PlayerBundle {
-    pub fn new(speed: f32, size: Vec2, interaction_radius: f32, texture: Handle<Image>) -> Self {
+    pub fn new(speed: f32, size: Vec2, texture: Handle<Image>) -> Self {
         PlayerBundle {
             marker: Player,
             speed: Speed(speed),
@@ -43,16 +46,16 @@ impl PlayerBundle {
                 half_height: size.y / 2.,
             },
             interaction_collider: CircleCollider {
-                radius: interaction_radius,
+                radius: PLAYER_INTERACTION_RADIUS,
             },
             sprite: SpriteBundle {
                 transform: Transform::from_translation(Vec3::new(0., 0., OVERWORLD_PLAYER_LAYER)),
                 texture,
                 sprite: Sprite {
                     custom_size: Some(Vec2::new(size.x, size.y)),
-                    ..Default::default()
+                    ..default()
                 },
-                ..Default::default()
+                ..default()
             },
         }
     }

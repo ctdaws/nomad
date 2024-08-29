@@ -1,28 +1,20 @@
 use bevy::{
-    asset::{AssetServer, Assets},
-    color::{Color, Srgba},
-    ecs::system::{Commands, Res, ResMut},
-    math::{primitives::Circle, Vec2},
-    render::mesh::Mesh,
-    sprite::{
-        ColorMaterial, MaterialMesh2dBundle, Mesh2dHandle, Sprite, SpriteBundle, Wireframe2dConfig,
-    },
+    asset::{AssetServer, Handle},
+    ecs::system::{Commands, Res},
+    math::Vec2,
+    render::texture::Image,
+    sprite::{Sprite, SpriteBundle},
     transform::components::Transform,
     utils::default,
 };
 
-use super::player::PlayerBundle;
+use super::{berry_bush::BerryBushBundle, player::PlayerBundle, tree::TreeBundle};
 
 pub const OVERWORLD_BACKGROUND_LAYER: f32 = 0.;
 pub const OVERWORLD_INTERACTABLE_ENTITIES_LAYER: f32 = 1.;
 pub const OVERWORLD_PLAYER_LAYER: f32 = 2.;
 
-pub fn setup_overworld(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-) {
+pub fn setup_overworld(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn(SpriteBundle {
         texture: asset_server.load("textures/overworld_background.png"),
         transform: Transform::from_xyz(0., 0., OVERWORLD_BACKGROUND_LAYER),
@@ -35,30 +27,13 @@ pub fn setup_overworld(
         asset_server.load("textures/player.png"),
     ));
 
-    commands.spawn(SpriteBundle {
-        texture: asset_server.load("textures/tree.png"),
-        transform: Transform::from_xyz(10., 10., OVERWORLD_INTERACTABLE_ENTITIES_LAYER),
-        sprite: Sprite {
-            custom_size: Some(Vec2::new(90., 150.)),
-            ..default()
-        },
-        ..default()
-    });
+    let tree_texture: Handle<Image> = asset_server.load("textures/tree.png");
+    let berry_bush_texture: Handle<Image> = asset_server.load("textures/berry_bush.png");
 
-    commands.spawn(SpriteBundle {
-        texture: asset_server.load("textures/berry_bush.png"),
-        transform: Transform::from_xyz(-100., 100., OVERWORLD_INTERACTABLE_ENTITIES_LAYER),
-        sprite: Sprite {
-            custom_size: Some(Vec2::new(100., 100.)),
-            ..default()
-        },
-        ..default()
-    });
+    commands.spawn(TreeBundle::new(Vec2::new(50., 50.), tree_texture));
 
-    commands.spawn(MaterialMesh2dBundle {
-        mesh: Mesh2dHandle(meshes.add(Circle { radius: 50.0 })),
-        material: materials.add(Color::Srgba(Srgba::GREEN)),
-        transform: Transform::from_xyz(0.0, 0.0, 5.0),
-        ..default()
-    });
+    commands.spawn(BerryBushBundle::new(
+        Vec2::new(-100., 100.),
+        berry_bush_texture,
+    ));
 }
