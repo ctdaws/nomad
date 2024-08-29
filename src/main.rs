@@ -1,4 +1,4 @@
-use bevy::{prelude::*, window::WindowResolution};
+use bevy::{prelude::*, sprite::Wireframe2dPlugin, window::WindowResolution};
 use settlers::{game_plugin::GamePlugin, WINDOW_START_HEIGHT, WINDOW_START_WIDTH};
 
 fn main() {
@@ -8,10 +8,11 @@ fn main() {
                 primary_window: Some(Window {
                     title: "Settlers".to_string(),
                     resolution: WindowResolution::new(WINDOW_START_WIDTH, WINDOW_START_HEIGHT),
-                    ..Default::default()
+                    ..default()
                 }),
-                ..Default::default()
+                ..default()
             }),
+            Wireframe2dPlugin,
             GamePlugin,
         ))
         .run();

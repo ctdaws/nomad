@@ -13,37 +13,40 @@ use bevy::{
     transform::components::Transform,
 };
 
-#[derive(Component)]
-pub struct Speed(pub f32);
+use super::{
+    collisions::{CircleCollider, SquareCollider},
+    setup::OVERWORLD_PLAYER_LAYER,
+};
 
 #[derive(Component)]
-pub struct Size {
-    pub x: f32,
-    pub y: f32,
-}
+pub struct Speed(pub f32);
 
 #[derive(Component)]
 pub struct Player;
 
 #[derive(Bundle)]
 pub struct PlayerBundle {
-    pub marker: Player,
-    pub speed: Speed,
-    pub size: Size,
-    pub sprite: SpriteBundle,
+    marker: Player,
+    speed: Speed,
+    collider: SquareCollider,
+    interaction_collider: CircleCollider,
+    sprite: SpriteBundle,
 }
 
 impl PlayerBundle {
-    pub fn new(speed: f32, size: Vec2, texture: Handle<Image>) -> Self {
+    pub fn new(speed: f32, size: Vec2, interaction_radius: f32, texture: Handle<Image>) -> Self {
         PlayerBundle {
             marker: Player,
             speed: Speed(speed),
-            size: Size {
-                x: size.x,
-                y: size.y,
+            collider: SquareCollider {
+                half_width: size.x / 2.,
+                half_height: size.y / 2.,
+            },
+            interaction_collider: CircleCollider {
+                radius: interaction_radius,
             },
             sprite: SpriteBundle {
-                transform: Transform::from_translation(Vec3::new(0., 0., 2.)),
+                transform: Transform::from_translation(Vec3::new(0., 0., OVERWORLD_PLAYER_LAYER)),
                 texture,
                 sprite: Sprite {
                     custom_size: Some(Vec2::new(size.x, size.y)),
