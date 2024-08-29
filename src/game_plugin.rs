@@ -1,23 +1,20 @@
 use bevy::{
-    app::{App, Plugin, Startup, Update},
-    asset::AssetServer,
+    app::{App, FixedUpdate, Plugin, Startup, Update},
     core_pipeline::core_2d::Camera2dBundle,
     ecs::{
         component::Component,
-        schedule::{common_conditions::in_state, IntoSystemSetConfigs, States, SystemSet},
-        system::{Commands, Res, Resource},
+        schedule::SystemSet,
+        system::{Commands, Resource},
     },
     prelude::IntoSystemConfigs,
     render::camera::ScalingMode,
-    sprite::SpriteBundle,
 };
 
 use crate::{
-    events::{advance_day, AdvanceDay},
-    input::{process_mouse_click, update_cursor_position, CursorWorldCoords},
-    locations::plugin::LocationsPlugin,
-    ui::plugin::UIPlugin,
-    venture::TestPlugin,
+    overworld::{
+        camera::update_camera_position, collisions::process_collisions, player::update_player,
+        setup::setup_overworld,
+    },
     WINDOW_START_HEIGHT, WINDOW_START_WIDTH,
 };
 
@@ -27,11 +24,11 @@ pub const GAME_START_INTERACTION_TEXT: &str = "Leave camp";
 #[derive(Component)]
 pub struct GameCamera;
 
-#[derive(States, Debug, Clone, PartialEq, Eq, Hash)]
-enum GameState {
-    MapScreen,
-    Game,
-}
+// #[derive(States, Debug, Clone, PartialEq, Eq, Hash)]
+// enum GameState {
+//     MapScreen,
+//     Game,
+// }
 
 #[derive(Resource)]
 pub struct PlayerResources {
@@ -54,7 +51,9 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(TestPlugin);
+        app.add_systems(Startup, (setup_game_camera, setup_overworld))
+            .add_systems(Update, update_camera_position)
+            .add_systems(FixedUpdate, (update_player, process_collisions).chain());
     }
     // fn build(&self, app: &mut App) {
     //     app.add_plugins((UIPlugin, LocationsPlugin))
@@ -83,7 +82,7 @@ impl Plugin for GamePlugin {
     // }
 }
 
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup_game_camera(mut commands: Commands) {
     let mut camera_bundle = Camera2dBundle::default();
     camera_bundle.projection.scaling_mode = ScalingMode::Fixed {
         width: WINDOW_START_WIDTH,
@@ -91,9 +90,4 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     };
 
     commands.spawn((camera_bundle, GameCamera));
-
-    commands.spawn(SpriteBundle {
-        texture: asset_server.load("textures/background.png"),
-        ..Default::default()
-    });
 }

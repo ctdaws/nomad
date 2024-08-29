@@ -1,5 +1,5 @@
 use bevy::{prelude::*, window::WindowResolution};
-use settlers::{plugin::GamePlugin, WINDOW_START_HEIGHT, WINDOW_START_WIDTH};
+use settlers::{game_plugin::GamePlugin, WINDOW_START_HEIGHT, WINDOW_START_WIDTH};
 
 fn main() {
     App::new()
@@ -14,5 +14,5 @@ fn main() {
             }),
             GamePlugin,
         ))
-        .run()
+        .run();
 }

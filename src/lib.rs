@@ -5,8 +5,8 @@ pub mod locations {
     pub mod plugin;
     pub mod setup;
 }
+pub mod game_plugin;
 pub mod input;
-pub mod plugin;
 pub mod ui {
     pub mod encounter;
     pub mod game_over;
@@ -15,7 +15,12 @@ pub mod ui {
     pub mod resources;
 }
 pub mod events;
-pub mod venture;
+pub mod overworld {
+    pub mod camera;
+    pub mod collisions;
+    pub mod player;
+    pub mod setup;
+}
 
 pub const WINDOW_START_WIDTH: f32 = 1920.;
 pub const WINDOW_START_HEIGHT: f32 = 1080.;
