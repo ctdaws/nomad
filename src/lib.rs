@@ -16,7 +16,6 @@ pub mod ui {
 }
 pub mod events;
 pub mod overworld {
-    pub mod camera;
     pub mod collisions;
     pub mod player;
     pub mod setup;

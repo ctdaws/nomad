@@ -1,5 +1,5 @@
 use bevy::{
-    color::{Color, Srgba},
+    asset::Handle,
     ecs::{
         bundle::Bundle,
         component::Component,
@@ -8,6 +8,7 @@ use bevy::{
     },
     input::{keyboard::KeyCode, ButtonInput},
     math::{Vec2, Vec3},
+    render::texture::Image,
     sprite::{Sprite, SpriteBundle},
     transform::components::Transform,
 };
@@ -33,7 +34,7 @@ pub struct PlayerBundle {
 }
 
 impl PlayerBundle {
-    pub fn new(speed: f32, size: Vec2) -> Self {
+    pub fn new(speed: f32, size: Vec2, texture: Handle<Image>) -> Self {
         PlayerBundle {
             marker: Player,
             speed: Speed(speed),
@@ -42,9 +43,9 @@ impl PlayerBundle {
                 y: size.y,
             },
             sprite: SpriteBundle {
-                transform: Transform::from_translation(Vec3::new(0., 0., 1.)),
+                transform: Transform::from_translation(Vec3::new(0., 0., 2.)),
+                texture,
                 sprite: Sprite {
-                    color: Color::Srgba(Srgba::BLUE),
                     custom_size: Some(Vec2::new(size.x, size.y)),
                     ..Default::default()
                 },

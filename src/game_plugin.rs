@@ -1,5 +1,5 @@
 use bevy::{
-    app::{App, FixedUpdate, Plugin, Startup, Update},
+    app::{App, FixedUpdate, Plugin, Startup},
     core_pipeline::core_2d::Camera2dBundle,
     ecs::{
         component::Component,
@@ -11,10 +11,7 @@ use bevy::{
 };
 
 use crate::{
-    overworld::{
-        camera::update_camera_position, collisions::process_collisions, player::update_player,
-        setup::setup_overworld,
-    },
+    overworld::{collisions::process_collisions, player::update_player, setup::setup_overworld},
     WINDOW_START_HEIGHT, WINDOW_START_WIDTH,
 };
 
@@ -52,7 +49,6 @@ pub struct GamePlugin;
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, (setup_game_camera, setup_overworld))
-            .add_systems(Update, update_camera_position)
             .add_systems(FixedUpdate, (update_player, process_collisions).chain());
     }
     // fn build(&self, app: &mut App) {
