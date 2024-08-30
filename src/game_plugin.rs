@@ -1,19 +1,15 @@
 use bevy::{
-    app::{App, FixedUpdate, Plugin, Startup},
+    app::{App, Plugin, Startup},
     core_pipeline::core_2d::Camera2dBundle,
     ecs::{
         component::Component,
         schedule::SystemSet,
         system::{Commands, Resource},
     },
-    prelude::IntoSystemConfigs,
     render::camera::ScalingMode,
 };
 
-use crate::{
-    overworld::{collisions::process_collisions, player::update_player, setup::setup_overworld},
-    WINDOW_START_HEIGHT, WINDOW_START_WIDTH,
-};
+use crate::{overworld::plugin::OverworldPlugin, WINDOW_START_HEIGHT, WINDOW_START_WIDTH};
 
 pub const GAME_START_TEXT: &str = "Narrowly, you and your people escaped danger through the mountain pass. In the panic you didn't have time to bring anything with you. While you've found temporary sanctuary here, the tribe will die without support. You must explore and forage for supplies if the tribe is to survive";
 pub const GAME_START_INTERACTION_TEXT: &str = "Leave camp";
@@ -48,8 +44,8 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, (setup_game_camera, setup_overworld))
-            .add_systems(FixedUpdate, (update_player, process_collisions).chain());
+        app.add_plugins(OverworldPlugin)
+            .add_systems(Startup, setup_game_camera);
     }
     // fn build(&self, app: &mut App) {
     //     app.add_plugins((UIPlugin, LocationsPlugin))

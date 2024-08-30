@@ -19,7 +19,9 @@ pub mod overworld {
     pub mod berry_bush;
     pub mod collisions;
     pub mod player;
+    pub mod plugin;
     pub mod setup;
+    pub mod stick;
     pub mod tree;
 }
 

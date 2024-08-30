@@ -1,12 +1,11 @@
 use bevy::{
-    asset::{AssetServer, Handle},
+    asset::Handle,
     ecs::{
         bundle::Bundle,
         component::Component,
         entity::Entity,
         event::{Event, EventReader},
-        query::With,
-        system::{Query, Res},
+        system::Commands,
     },
     math::{Vec2, Vec3},
     render::texture::Image,
@@ -17,27 +16,27 @@ use bevy::{
 
 use super::{collisions::CircleCollider, setup::OVERWORLD_INTERACTABLE_ENTITIES_LAYER};
 
-const BERRY_BUSH_INTERACTION_RADIUS: f32 = 50.;
+const STICK_INTERACTION_RADIUS: f32 = 40.;
 
 #[derive(Component)]
-pub struct BerryBush;
+pub struct Stick;
 
 #[derive(Event)]
-pub struct BerryBushPickedEvent(pub Entity);
+pub struct StickPickedUpEvent(pub Entity);
 
 #[derive(Bundle)]
-pub struct BerryBushBundle {
-    marker: BerryBush,
+pub struct StickBundle {
+    marker: Stick,
     interaction_collider: CircleCollider,
     sprite: SpriteBundle,
 }
 
-impl BerryBushBundle {
+impl StickBundle {
     pub fn new(position: Vec2, texture: Handle<Image>) -> Self {
-        BerryBushBundle {
-            marker: BerryBush,
+        StickBundle {
+            marker: Stick,
             interaction_collider: CircleCollider {
-                radius: BERRY_BUSH_INTERACTION_RADIUS,
+                radius: STICK_INTERACTION_RADIUS,
             },
             sprite: SpriteBundle {
                 transform: Transform::from_translation(Vec3::new(
@@ -47,7 +46,7 @@ impl BerryBushBundle {
                 )),
                 texture,
                 sprite: Sprite {
-                    custom_size: Some(Vec2::new(100., 100.)),
+                    custom_size: Some(Vec2::new(80., 80.)),
                     ..default()
                 },
                 ..default()
@@ -56,13 +55,11 @@ impl BerryBushBundle {
     }
 }
 
-pub fn pick_berry_bush(
-    asset_server: Res<AssetServer>,
-    mut berry_bush_picked_events: EventReader<BerryBushPickedEvent>,
-    mut query: Query<&mut Handle<Image>, With<BerryBush>>,
+pub fn pick_up_stick(
+    mut stick_picked_up_events: EventReader<StickPickedUpEvent>,
+    mut commands: Commands,
 ) {
-    for ev in berry_bush_picked_events.read() {
-        let mut texture = query.get_mut(ev.0).unwrap();
-        *texture = asset_server.load("textures/berry_bush_picked.png");
+    for ev in stick_picked_up_events.read() {
+        commands.entity(ev.0).despawn();
     }
 }
