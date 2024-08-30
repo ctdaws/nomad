@@ -14,6 +14,7 @@ use super::{
     setup::setup_overworld,
     stick::{pick_up_stick, StickPickedUpEvent},
     ui::plugin::OverworldUIPlugin,
+    water_pool::{collect_water, WaterCollectedEvent},
 };
 
 pub struct OverworldPlugin;
@@ -26,6 +27,7 @@ impl Plugin for OverworldPlugin {
             .add_event::<UpdateWoodEvent>()
             .add_event::<StickPickedUpEvent>()
             .add_event::<BerryBushPickedEvent>()
+            .add_event::<WaterCollectedEvent>()
             .init_resource::<PartyResources>()
             .add_systems(Startup, setup_overworld)
             .add_systems(
@@ -34,6 +36,7 @@ impl Plugin for OverworldPlugin {
                     process_player_interaction,
                     pick_up_stick,
                     pick_berry_bush,
+                    collect_water,
                     update_food,
                     update_water,
                     update_wood,

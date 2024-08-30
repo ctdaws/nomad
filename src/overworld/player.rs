@@ -21,9 +21,10 @@ use super::{
     collisions::{CircleCollider, SquareCollider},
     setup::OVERWORLD_PLAYER_LAYER,
     stick::{Stick, StickPickedUpEvent},
+    water_pool::{WaterCollectedEvent, WaterPool},
 };
 
-const PLAYER_SPEED: f32 = 5.;
+const PLAYER_SPEED: f32 = 7.;
 const PLAYER_INTERACTION_RADIUS: f32 = 40.;
 
 #[derive(Component)]
@@ -120,9 +121,11 @@ pub fn process_player_interaction(
     mut interactables: ParamSet<(
         Query<(Entity, &Transform, &CircleCollider), With<Stick>>,
         Query<(Entity, &BerryBushState, &Transform, &CircleCollider), With<BerryBush>>,
+        Query<(&Transform, &CircleCollider), With<WaterPool>>,
     )>,
     mut stick_picked_up_events: EventWriter<StickPickedUpEvent>,
     mut berry_bush_picked_events: EventWriter<BerryBushPickedEvent>,
+    mut water_collected_events: EventWriter<WaterCollectedEvent>,
 ) {
     if keys.just_pressed(KeyCode::Space) {
         let (player_tranform, player_interaction_collider) = player_query.single();
@@ -150,6 +153,17 @@ pub fn process_player_interaction(
                 if !matches!(state, BerryBushState::Picked) {
                     berry_bush_picked_events.send(BerryBushPickedEvent(id));
                 }
+            }
+        }
+
+        for (water_pool_transform, water_pool_interaction_collider) in interactables.p2().iter() {
+            if did_collide(
+                player_tranform,
+                player_interaction_collider,
+                water_pool_transform,
+                water_pool_interaction_collider,
+            ) {
+                water_collected_events.send(WaterCollectedEvent());
             }
         }
     }

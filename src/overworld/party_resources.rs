@@ -5,6 +5,8 @@ use bevy::ecs::{
 
 use super::ui::party_resources::{UpdateFoodUIEvent, UpdateWaterUIEvent, UpdateWoodUIEvent};
 
+pub const PARTY_MAX_WATER: i32 = 30;
+
 #[derive(Resource, Default)]
 pub struct PartyResources {
     pub food: i32,

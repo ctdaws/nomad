@@ -24,6 +24,7 @@ pub mod overworld {
     pub mod setup;
     pub mod stick;
     pub mod tree;
+    pub mod water_pool;
     pub mod ui {
         pub mod party_resources;
         pub mod plugin;

@@ -10,6 +10,7 @@ use bevy::{
 
 use super::{
     berry_bush::BerryBushBundle, player::PlayerBundle, stick::StickBundle, tree::TreeBundle,
+    water_pool::WaterPoolBundle,
 };
 
 pub const OVERWORLD_BACKGROUND_LAYER: f32 = 0.;
@@ -28,13 +29,63 @@ pub fn setup_overworld(mut commands: Commands, asset_server: Res<AssetServer>) {
     let tree_texture: Handle<Image> = asset_server.load("textures/tree.png");
     let berry_bush_texture: Handle<Image> = asset_server.load("textures/berry_bush.png");
     let stick_texture: Handle<Image> = asset_server.load("textures/stick.png");
+    let water_pool_texture: Handle<Image> = asset_server.load("textures/water_pool.png");
 
-    commands.spawn(TreeBundle::new(Vec2::new(50., 50.), tree_texture));
-
-    commands.spawn(BerryBushBundle::new(
-        Vec2::new(-100., 100.),
-        berry_bush_texture,
+    commands.spawn(WaterPoolBundle::new(
+        Vec2::new(700., 400.),
+        water_pool_texture,
     ));
 
-    commands.spawn(StickBundle::new(Vec2::new(200., -300.), stick_texture));
+    commands.spawn(TreeBundle::new(Vec2::new(0., -200.), tree_texture.clone()));
+    commands.spawn(TreeBundle::new(
+        Vec2::new(-100., -300.),
+        tree_texture.clone(),
+    ));
+    commands.spawn(TreeBundle::new(
+        Vec2::new(100., -260.),
+        tree_texture.clone(),
+    ));
+
+    commands.spawn(BerryBushBundle::new(
+        Vec2::new(-250., 400.),
+        berry_bush_texture.clone(),
+    ));
+    commands.spawn(BerryBushBundle::new(
+        Vec2::new(-275., 350.),
+        berry_bush_texture.clone(),
+    ));
+    commands.spawn(BerryBushBundle::new(
+        Vec2::new(-350., 300.),
+        berry_bush_texture.clone(),
+    ));
+    commands.spawn(BerryBushBundle::new(
+        Vec2::new(-400., 375.),
+        berry_bush_texture.clone(),
+    ));
+
+    commands.spawn(StickBundle::new(
+        Vec2::new(600., -450.),
+        stick_texture.clone(),
+    ));
+    commands.spawn(StickBundle::new(
+        Vec2::new(650., -475.),
+        stick_texture.clone(),
+    ));
+    commands.spawn(StickBundle::new(
+        Vec2::new(700., -400.),
+        stick_texture.clone(),
+    ));
+
+    commands.spawn(StickBundle::new(
+        Vec2::new(-450., -200.),
+        stick_texture.clone(),
+    ));
+    commands.spawn(StickBundle::new(
+        Vec2::new(-475., -250.),
+        stick_texture.clone(),
+    ));
+    commands.spawn(StickBundle::new(
+        Vec2::new(-500., -225.),
+        stick_texture.clone(),
+    ));
 }
