@@ -4,7 +4,7 @@ use bevy::{
         bundle::Bundle,
         component::Component,
         entity::Entity,
-        event::{Event, EventReader},
+        event::{Event, EventReader, EventWriter},
         system::Commands,
     },
     math::{Vec2, Vec3},
@@ -14,15 +14,18 @@ use bevy::{
     utils::default,
 };
 
-use super::{collisions::CircleCollider, setup::OVERWORLD_INTERACTABLE_ENTITIES_LAYER};
+use super::{
+    collisions::CircleCollider, party_resources::UpdateWoodEvent,
+    setup::OVERWORLD_INTERACTABLE_ENTITIES_LAYER,
+};
 
 const STICK_INTERACTION_RADIUS: f32 = 40.;
 
-#[derive(Component)]
-pub struct Stick;
-
 #[derive(Event)]
 pub struct StickPickedUpEvent(pub Entity);
+
+#[derive(Component)]
+pub struct Stick;
 
 #[derive(Bundle)]
 pub struct StickBundle {
@@ -56,10 +59,12 @@ impl StickBundle {
 }
 
 pub fn pick_up_stick(
-    mut stick_picked_up_events: EventReader<StickPickedUpEvent>,
     mut commands: Commands,
+    mut stick_picked_up_events: EventReader<StickPickedUpEvent>,
+    mut update_wood_events: EventWriter<UpdateWoodEvent>,
 ) {
     for ev in stick_picked_up_events.read() {
+        update_wood_events.send(UpdateWoodEvent(5));
         commands.entity(ev.0).despawn();
     }
 }

@@ -17,7 +17,7 @@ use bevy::{
 };
 
 use super::{
-    berry_bush::{BerryBush, BerryBushPickedEvent},
+    berry_bush::{BerryBush, BerryBushPickedEvent, BerryBushState},
     collisions::{CircleCollider, SquareCollider},
     setup::OVERWORLD_PLAYER_LAYER,
     stick::{Stick, StickPickedUpEvent},
@@ -119,7 +119,7 @@ pub fn process_player_interaction(
     player_query: Query<(&Transform, &CircleCollider), With<Player>>,
     mut interactables: ParamSet<(
         Query<(Entity, &Transform, &CircleCollider), With<Stick>>,
-        Query<(Entity, &Transform, &CircleCollider), With<BerryBush>>,
+        Query<(Entity, &BerryBushState, &Transform, &CircleCollider), With<BerryBush>>,
     )>,
     mut stick_picked_up_events: EventWriter<StickPickedUpEvent>,
     mut berry_bush_picked_events: EventWriter<BerryBushPickedEvent>,
@@ -138,7 +138,8 @@ pub fn process_player_interaction(
             }
         }
 
-        for (id, berry_bush_transform, berry_bush_interaction_collider) in interactables.p1().iter()
+        for (id, state, berry_bush_transform, berry_bush_interaction_collider) in
+            interactables.p1().iter()
         {
             if did_collide(
                 player_tranform,
@@ -146,7 +147,9 @@ pub fn process_player_interaction(
                 berry_bush_transform,
                 berry_bush_interaction_collider,
             ) {
-                berry_bush_picked_events.send(BerryBushPickedEvent(id));
+                if !matches!(state, BerryBushState::Picked) {
+                    berry_bush_picked_events.send(BerryBushPickedEvent(id));
+                }
             }
         }
     }
