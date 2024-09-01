@@ -8,7 +8,7 @@ use bevy::{
     utils::default,
 };
 
-use super::{collisions::CircleCollider, setup::OVERWORLD_INTERACTABLE_ENTITIES_LAYER};
+use crate::overworld::{collisions::CircleCollider, setup::OVERWORLD_INTERACTABLE_ENTITIES_LAYER};
 
 const TREE_INTERACTION_RADIUS: f32 = 10.;
 

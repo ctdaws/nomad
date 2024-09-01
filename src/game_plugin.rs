@@ -47,31 +47,6 @@ impl Plugin for GamePlugin {
         app.add_plugins(OverworldPlugin)
             .add_systems(Startup, setup_game_camera);
     }
-    // fn build(&self, app: &mut App) {
-    //     app.add_plugins((UIPlugin, LocationsPlugin))
-    //         .init_resource::<CursorWorldCoords>()
-    //         .insert_resource(PlayerResources {
-    //             food: 20,
-    //             water: 20,
-    //             wood: 0,
-    //         })
-    //         .insert_resource(SettlementResources {
-    //             food: 0,
-    //             water: 0,
-    //             wood: 0,
-    //         })
-    //         .insert_state(GameState::MapScreen)
-    //         .add_event::<AdvanceDay>()
-    //         .add_systems(Startup, setup.in_set(MapSet))
-    //         .add_systems(
-    //             Update,
-    //             (update_cursor_position, process_mouse_click, advance_day)
-    //                 .chain()
-    //                 .in_set(MapSet),
-    //         )
-    //         .configure_sets(Startup, MapSet.run_if(in_state(GameState::MapScreen)))
-    //         .configure_sets(Update, MapSet.run_if(in_state(GameState::MapScreen)));
-    // }
 }
 
 fn setup_game_camera(mut commands: Commands) {

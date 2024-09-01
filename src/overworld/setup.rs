@@ -8,9 +8,9 @@ use bevy::{
     utils::default,
 };
 
-use super::{
-    berry_bush::BerryBushBundle, player::PlayerBundle, stick::StickBundle, tree::TreeBundle,
-    water_pool::WaterPoolBundle,
+use super::entities::{
+    berry_bush::BerryBushBundle, change_location_zone::ChangeLocationZoneBundle,
+    player::PlayerBundle, stick::StickBundle, tree::TreeBundle, water_pool::WaterPoolBundle,
 };
 
 pub const OVERWORLD_BACKGROUND_LAYER: f32 = 0.;
@@ -30,6 +30,8 @@ pub fn setup_overworld(mut commands: Commands, asset_server: Res<AssetServer>) {
     let berry_bush_texture: Handle<Image> = asset_server.load("textures/berry_bush.png");
     let stick_texture: Handle<Image> = asset_server.load("textures/stick.png");
     let water_pool_texture: Handle<Image> = asset_server.load("textures/water_pool.png");
+    let change_location_zone_texture: Handle<Image> =
+        asset_server.load("textures/change_location_zone.png");
 
     commands.spawn(WaterPoolBundle::new(
         Vec2::new(700., 400.),
@@ -87,5 +89,10 @@ pub fn setup_overworld(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn(StickBundle::new(
         Vec2::new(-500., -225.),
         stick_texture.clone(),
+    ));
+
+    commands.spawn(ChangeLocationZoneBundle::new(
+        Vec2::new(0., 500.),
+        change_location_zone_texture.clone(),
     ));
 }

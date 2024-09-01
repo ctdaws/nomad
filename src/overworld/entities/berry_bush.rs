@@ -15,7 +15,7 @@ use bevy::{
     utils::default,
 };
 
-use super::{
+use crate::overworld::{
     collisions::CircleCollider, party_resources::UpdateFoodEvent,
     setup::OVERWORLD_INTERACTABLE_ENTITIES_LAYER,
 };

@@ -9,17 +9,20 @@ use bevy::{
         system::{ParamSet, Query, Res},
     },
     input::{keyboard::KeyCode, ButtonInput},
-    math::{Vec2, Vec3, Vec3Swizzles},
+    math::{Vec2, Vec3},
     render::texture::Image,
     sprite::{Sprite, SpriteBundle},
     transform::components::Transform,
     utils::default,
 };
 
+use crate::overworld::{
+    collisions::{CircleCollider, RectangleCollider},
+    setup::OVERWORLD_PLAYER_LAYER,
+};
+
 use super::{
     berry_bush::{BerryBush, BerryBushPickedEvent, BerryBushState},
-    collisions::{CircleCollider, SquareCollider},
-    setup::OVERWORLD_PLAYER_LAYER,
     stick::{Stick, StickPickedUpEvent},
     water_pool::{WaterCollectedEvent, WaterPool},
 };
@@ -37,7 +40,7 @@ pub struct Player;
 pub struct PlayerBundle {
     marker: Player,
     speed: Speed,
-    collider: SquareCollider,
+    collider: RectangleCollider,
     interaction_collider: CircleCollider,
     sprite: SpriteBundle,
 }
@@ -49,7 +52,7 @@ impl PlayerBundle {
         PlayerBundle {
             marker: Player,
             speed: Speed(PLAYER_SPEED),
-            collider: SquareCollider {
+            collider: RectangleCollider {
                 half_width: size.x / 2.,
                 half_height: size.y / 2.,
             },
@@ -69,7 +72,7 @@ impl PlayerBundle {
     }
 }
 
-pub fn update_player_movement(
+pub fn player_movement(
     keys: Res<ButtonInput<KeyCode>>,
     mut query: Query<(&mut Transform, &Speed), With<Player>>,
 ) {
@@ -97,25 +100,7 @@ pub fn update_player_movement(
         transform.translation + (Vec3::new(move_vector.x, move_vector.y, 0.) * speed.0);
 }
 
-fn did_collide(
-    player_transform: &Transform,
-    player_collider: &CircleCollider,
-    interactable_transform: &Transform,
-    interactable_collider: &CircleCollider,
-) -> bool {
-    let distance = player_transform
-        .translation
-        .xy()
-        .distance(interactable_transform.translation.xy());
-
-    if distance < (player_collider.radius + interactable_collider.radius) {
-        true
-    } else {
-        false
-    }
-}
-
-pub fn process_player_interaction(
+pub fn player_interaction(
     keys: Res<ButtonInput<KeyCode>>,
     player_query: Query<(&Transform, &CircleCollider), With<Player>>,
     mut interactables: ParamSet<(
@@ -131,9 +116,8 @@ pub fn process_player_interaction(
         let (player_tranform, player_interaction_collider) = player_query.single();
 
         for (id, stick_transform, stick_interaction_collider) in interactables.p0().iter() {
-            if did_collide(
+            if player_interaction_collider.did_collide_with_circle(
                 player_tranform,
-                player_interaction_collider,
                 stick_transform,
                 stick_interaction_collider,
             ) {
@@ -144,9 +128,8 @@ pub fn process_player_interaction(
         for (id, state, berry_bush_transform, berry_bush_interaction_collider) in
             interactables.p1().iter()
         {
-            if did_collide(
+            if player_interaction_collider.did_collide_with_circle(
                 player_tranform,
-                player_interaction_collider,
                 berry_bush_transform,
                 berry_bush_interaction_collider,
             ) {
@@ -157,9 +140,8 @@ pub fn process_player_interaction(
         }
 
         for (water_pool_transform, water_pool_interaction_collider) in interactables.p2().iter() {
-            if did_collide(
+            if player_interaction_collider.did_collide_with_circle(
                 player_tranform,
-                player_interaction_collider,
                 water_pool_transform,
                 water_pool_interaction_collider,
             ) {

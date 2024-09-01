@@ -3,9 +3,8 @@ use bevy::{
     ecs::{
         bundle::Bundle,
         component::Component,
-        entity::Entity,
         event::{Event, EventReader, EventWriter},
-        system::Commands,
+        system::Res,
     },
     math::{Vec2, Vec3},
     render::texture::Image,
@@ -14,32 +13,33 @@ use bevy::{
     utils::default,
 };
 
-use super::{
-    collisions::CircleCollider, party_resources::UpdateWoodEvent,
+use crate::overworld::{
+    collisions::CircleCollider,
+    party_resources::{PartyResources, UpdateWaterEvent, PARTY_MAX_WATER},
     setup::OVERWORLD_INTERACTABLE_ENTITIES_LAYER,
 };
 
-const STICK_INTERACTION_RADIUS: f32 = 40.;
+const WATER_POOL_INTERACTION_RADIUS: f32 = 40.;
 
 #[derive(Event)]
-pub struct StickPickedUpEvent(pub Entity);
+pub struct WaterCollectedEvent();
 
 #[derive(Component)]
-pub struct Stick;
+pub struct WaterPool;
 
 #[derive(Bundle)]
-pub struct StickBundle {
-    marker: Stick,
+pub struct WaterPoolBundle {
+    marker: WaterPool,
     interaction_collider: CircleCollider,
     sprite: SpriteBundle,
 }
 
-impl StickBundle {
+impl WaterPoolBundle {
     pub fn new(position: Vec2, texture: Handle<Image>) -> Self {
-        StickBundle {
-            marker: Stick,
+        WaterPoolBundle {
+            marker: WaterPool,
             interaction_collider: CircleCollider {
-                radius: STICK_INTERACTION_RADIUS,
+                radius: WATER_POOL_INTERACTION_RADIUS,
             },
             sprite: SpriteBundle {
                 transform: Transform::from_translation(Vec3::new(
@@ -58,13 +58,12 @@ impl StickBundle {
     }
 }
 
-pub fn pick_up_stick(
-    mut commands: Commands,
-    mut stick_picked_up_events: EventReader<StickPickedUpEvent>,
-    mut update_wood_events: EventWriter<UpdateWoodEvent>,
+pub fn collect_water(
+    party_resources: Res<PartyResources>,
+    mut water_collected_events: EventReader<WaterCollectedEvent>,
+    mut update_water_events: EventWriter<UpdateWaterEvent>,
 ) {
-    for ev in stick_picked_up_events.read() {
-        update_wood_events.send(UpdateWoodEvent(5));
-        commands.entity(ev.0).despawn();
+    for _ in water_collected_events.read() {
+        update_water_events.send(UpdateWaterEvent(PARTY_MAX_WATER - party_resources.water));
     }
 }
