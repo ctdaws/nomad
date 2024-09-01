@@ -4,6 +4,7 @@ use bevy::{
         bundle::Bundle,
         component::Component,
         event::{Event, EventReader, EventWriter},
+        system::Res,
     },
     math::{Vec2, Vec3},
     render::texture::Image,
@@ -14,7 +15,7 @@ use bevy::{
 
 use super::{
     collisions::CircleCollider,
-    party_resources::{UpdateWaterEvent, PARTY_MAX_WATER},
+    party_resources::{PartyResources, UpdateWaterEvent, PARTY_MAX_WATER},
     setup::OVERWORLD_INTERACTABLE_ENTITIES_LAYER,
 };
 
@@ -58,10 +59,11 @@ impl WaterPoolBundle {
 }
 
 pub fn collect_water(
+    party_resources: Res<PartyResources>,
     mut water_collected_events: EventReader<WaterCollectedEvent>,
     mut update_water_events: EventWriter<UpdateWaterEvent>,
 ) {
     for _ in water_collected_events.read() {
-        update_water_events.send(UpdateWaterEvent(PARTY_MAX_WATER));
+        update_water_events.send(UpdateWaterEvent(PARTY_MAX_WATER - party_resources.water));
     }
 }
