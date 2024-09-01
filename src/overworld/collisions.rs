@@ -1,6 +1,7 @@
 use bevy::{
     ecs::{
         component::Component,
+        event::EventWriter,
         query::{With, Without},
         system::Query,
     },
@@ -8,7 +9,10 @@ use bevy::{
     transform::components::Transform,
 };
 
-use super::entities::{change_location_zone::ChangeLocationZone, player::Player};
+use super::{
+    change_location::ChangeLocationEvent,
+    entities::{change_location_zone::ChangeLocationZone, player::Player},
+};
 
 const SCREEN_TOP_BOUND: f32 = 540.;
 const SCREEN_BOTTOM_BOUND: f32 = -540.;
@@ -75,10 +79,11 @@ pub fn collisions(
         (&mut Transform, &RectangleCollider),
         (With<Player>, Without<ChangeLocationZone>),
     >,
-    mut change_location_zone_query: Query<
+    change_location_zone_query: Query<
         (&Transform, &RectangleCollider),
         (With<ChangeLocationZone>, Without<Player>),
     >,
+    mut change_location_events: EventWriter<ChangeLocationEvent>,
 ) {
     let (mut player_transform, player_collider) = player_query.single_mut();
 
@@ -102,7 +107,7 @@ pub fn collisions(
 
     for (transform, collider) in change_location_zone_query.iter() {
         if player_collider.did_collide_with_rectangle(&*player_transform, transform, collider) {
-            println!("Collision");
+            change_location_events.send(ChangeLocationEvent);
         }
     }
 }

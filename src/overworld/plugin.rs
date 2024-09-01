@@ -4,6 +4,7 @@ use bevy::{
 };
 
 use super::{
+    change_location::{change_location, ChangeLocationEvent},
     collisions::collisions,
     entities::{
         berry_bush::{pick_berry_bush, BerryBushPickedEvent},
@@ -30,6 +31,7 @@ impl Plugin for OverworldPlugin {
             .add_event::<StickPickedUpEvent>()
             .add_event::<BerryBushPickedEvent>()
             .add_event::<WaterCollectedEvent>()
+            .add_event::<ChangeLocationEvent>()
             .init_resource::<PartyResources>()
             .add_systems(Startup, setup_overworld)
             .add_systems(
@@ -42,6 +44,7 @@ impl Plugin for OverworldPlugin {
                     update_food,
                     update_water,
                     update_wood,
+                    change_location,
                 ),
             )
             .add_systems(FixedUpdate, (player_movement, collisions).chain());
