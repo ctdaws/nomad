@@ -1,5 +1,8 @@
 pub mod game_plugin;
 pub mod overworld {
+    pub mod locations {
+        pub mod config;
+    }
     pub mod change_location;
     pub mod collisions;
     pub mod entities {

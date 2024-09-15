@@ -1,0 +1,56 @@
+use std::fs;
+
+use serde::Deserialize;
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct StickConfig {
+    pub x: f32,
+    pub y: f32,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct TreeConfig {
+    pub x: f32,
+    pub y: f32,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct BerryBushConfig {
+    pub x: f32,
+    pub y: f32,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct WaterPoolConfig {
+    pub x: f32,
+    pub y: f32,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct ChangeLocationZoneConfig {
+    pub x: f32,
+    pub y: f32,
+    pub connected_location: u32,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct LocationConfig {
+    pub id: u32,
+    pub sticks: Option<Vec<StickConfig>>,
+    pub trees: Option<Vec<TreeConfig>>,
+    pub berry_bushes: Option<Vec<BerryBushConfig>>,
+    pub water_pools: Option<Vec<WaterPoolConfig>>,
+    pub change_location_zones: Option<Vec<ChangeLocationZoneConfig>>,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct LocationConfigs {
+    pub locations: Vec<LocationConfig>,
+}
+
+pub fn load_location_configs() -> Vec<LocationConfig> {
+    let content = fs::read_to_string("config/locations.toml").unwrap();
+
+    let location_configs: LocationConfigs = toml::from_str(&content).unwrap();
+    location_configs.locations
+}
