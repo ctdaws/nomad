@@ -1,9 +1,9 @@
 pub mod game_plugin;
 pub mod locations {
     pub mod config;
+    pub mod location;
     pub mod setup;
 }
-pub mod change_location;
 pub mod party_resources;
 pub mod overworld {
     pub mod collisions;

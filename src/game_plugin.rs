@@ -1,13 +1,20 @@
 use bevy::{
-    app::{App, Plugin, Startup},
+    app::{App, Plugin, Startup, Update},
     core_pipeline::core_2d::Camera2dBundle,
     ecs::{component::Component, system::Commands},
     render::camera::ScalingMode,
 };
 
 use crate::{
-    locations::setup::{setup_locations, CurrentLocation, LocationId, Locations},
+    locations::{
+        location::{change_location, ChangeLocationEvent},
+        setup::{setup_locations, CurrentLocation, LocationId, Locations},
+    },
     overworld::plugin::OverworldPlugin,
+    party_resources::{
+        update_food, update_water, update_wood, PartyResources, UpdateFoodEvent, UpdateWaterEvent,
+        UpdateWoodEvent,
+    },
     WINDOW_START_HEIGHT, WINDOW_START_WIDTH,
 };
 
@@ -20,8 +27,17 @@ impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(OverworldPlugin)
             .init_resource::<Locations>()
+            .init_resource::<PartyResources>()
             .insert_resource(CurrentLocation(LocationId(0)))
-            .add_systems(Startup, (setup_game_camera, setup_locations));
+            .add_event::<UpdateFoodEvent>()
+            .add_event::<UpdateWaterEvent>()
+            .add_event::<UpdateWoodEvent>()
+            .add_event::<ChangeLocationEvent>()
+            .add_systems(Startup, (setup_game_camera, setup_locations))
+            .add_systems(
+                Update,
+                (change_location, update_food, update_water, update_wood),
+            );
     }
 }
 

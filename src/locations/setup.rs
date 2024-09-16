@@ -7,7 +7,7 @@ use bevy::{
 
 use super::config::{LocationConfig, LocationConfigs};
 
-#[derive(Hash, Eq, PartialEq)]
+#[derive(Hash, Eq, PartialEq, Clone)]
 pub struct LocationId(pub u32);
 
 #[derive(Resource)]

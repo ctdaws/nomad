@@ -9,9 +9,12 @@ use bevy::{
     transform::components::Transform,
 };
 
-use crate::change_location::ChangeLocationEvent;
+use crate::locations::location::ChangeLocationEvent;
 
-use super::entities::{change_location_zone::ChangeLocationZone, player::Player};
+use super::entities::{
+    change_location_zone::{ChangeLocationZone, ConnectedLocationId},
+    player::Player,
+};
 
 const SCREEN_TOP_BOUND: f32 = 540.;
 const SCREEN_BOTTOM_BOUND: f32 = -540.;
@@ -79,7 +82,7 @@ pub fn collisions(
         (With<Player>, Without<ChangeLocationZone>),
     >,
     change_location_zone_query: Query<
-        (&Transform, &RectangleCollider),
+        (&Transform, &RectangleCollider, &ConnectedLocationId),
         (With<ChangeLocationZone>, Without<Player>),
     >,
     mut change_location_events: EventWriter<ChangeLocationEvent>,
@@ -104,9 +107,9 @@ pub fn collisions(
         player_transform.translation.x = SCREEN_LEFT_BOUND + player_collider.half_width;
     }
 
-    for (transform, collider) in change_location_zone_query.iter() {
+    for (transform, collider, connected_location_id) in change_location_zone_query.iter() {
         if player_collider.did_collide_with_rectangle(&*player_transform, transform, collider) {
-            // change_location_events.send(ChangeLocationEvent);
+            change_location_events.send(ChangeLocationEvent(connected_location_id.0.clone()));
         }
     }
 }

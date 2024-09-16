@@ -8,22 +8,27 @@ use bevy::{
     utils::default,
 };
 
-use crate::overworld::{
-    collisions::RectangleCollider, setup::OVERWORLD_INTERACTABLE_ENTITIES_LAYER,
+use crate::{
+    locations::setup::LocationId,
+    overworld::{collisions::RectangleCollider, setup::OVERWORLD_INTERACTABLE_ENTITIES_LAYER},
 };
 
 #[derive(Component)]
 pub struct ChangeLocationZone;
+
+#[derive(Component)]
+pub struct ConnectedLocationId(pub LocationId);
 
 #[derive(Bundle)]
 pub struct ChangeLocationZoneBundle {
     marker: ChangeLocationZone,
     collider: RectangleCollider,
     sprite: SpriteBundle,
+    connected_location: ConnectedLocationId,
 }
 
 impl ChangeLocationZoneBundle {
-    pub fn new(position: Vec2, texture: Handle<Image>) -> Self {
+    pub fn new(position: Vec2, texture: Handle<Image>, connected_location_id: LocationId) -> Self {
         ChangeLocationZoneBundle {
             marker: ChangeLocationZone,
             collider: RectangleCollider {
@@ -43,6 +48,7 @@ impl ChangeLocationZoneBundle {
                 },
                 ..default()
             },
+            connected_location: ConnectedLocationId(connected_location_id),
         }
     }
 }
