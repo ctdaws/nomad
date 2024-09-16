@@ -14,9 +14,9 @@ use bevy::{
     utils::default,
 };
 
-use crate::overworld::{
-    collisions::CircleCollider, party_resources::UpdateWoodEvent,
-    setup::OVERWORLD_INTERACTABLE_ENTITIES_LAYER,
+use crate::{
+    overworld::{collisions::CircleCollider, setup::OVERWORLD_INTERACTABLE_ENTITIES_LAYER},
+    party_resources::UpdateWoodEvent,
 };
 
 const STICK_INTERACTION_RADIUS: f32 = 40.;

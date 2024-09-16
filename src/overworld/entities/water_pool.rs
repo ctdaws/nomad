@@ -13,10 +13,9 @@ use bevy::{
     utils::default,
 };
 
-use crate::overworld::{
-    collisions::CircleCollider,
+use crate::{
+    overworld::{collisions::CircleCollider, setup::OVERWORLD_INTERACTABLE_ENTITIES_LAYER},
     party_resources::{PartyResources, UpdateWaterEvent, PARTY_MAX_WATER},
-    setup::OVERWORLD_INTERACTABLE_ENTITIES_LAYER,
 };
 
 const WATER_POOL_INTERACTION_RADIUS: f32 = 40.;

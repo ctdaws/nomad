@@ -3,7 +3,9 @@ use bevy::ecs::{
     system::{ResMut, Resource},
 };
 
-use super::ui::party_resources::{UpdateFoodUIEvent, UpdateWaterUIEvent, UpdateWoodUIEvent};
+use crate::overworld::ui::party_resources::{
+    UpdateFoodUIEvent, UpdateWaterUIEvent, UpdateWoodUIEvent,
+};
 
 pub const PARTY_MAX_WATER: i32 = 30;
 

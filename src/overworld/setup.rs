@@ -8,19 +8,23 @@ use bevy::{
     utils::default,
 };
 
-use super::{
-    entities::{
-        berry_bush::BerryBushBundle, change_location_zone::ChangeLocationZoneBundle,
-        player::PlayerBundle, stick::StickBundle, tree::TreeBundle, water_pool::WaterPoolBundle,
-    },
-    locations::config::load_location_configs,
+use crate::locations::setup::{CurrentLocation, Locations};
+
+use super::entities::{
+    berry_bush::BerryBushBundle, change_location_zone::ChangeLocationZoneBundle,
+    player::PlayerBundle, stick::StickBundle, tree::TreeBundle, water_pool::WaterPoolBundle,
 };
 
 pub const OVERWORLD_BACKGROUND_LAYER: f32 = 0.;
 pub const OVERWORLD_INTERACTABLE_ENTITIES_LAYER: f32 = 1.;
 pub const OVERWORLD_PLAYER_LAYER: f32 = 2.;
 
-pub fn setup_overworld(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub fn setup_overworld(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    current_location: Res<CurrentLocation>,
+    locations: Res<Locations>,
+) {
     let tree_texture: Handle<Image> = asset_server.load("textures/tree.png");
     let berry_bush_texture: Handle<Image> = asset_server.load("textures/berry_bush.png");
     let stick_texture: Handle<Image> = asset_server.load("textures/stick.png");
@@ -28,9 +32,7 @@ pub fn setup_overworld(mut commands: Commands, asset_server: Res<AssetServer>) {
     let change_location_zone_texture: Handle<Image> =
         asset_server.load("textures/change_location_zone.png");
 
-    let location_configs = load_location_configs();
-
-    let config = location_configs[0].clone();
+    let config = locations.0[&current_location.0].clone();
 
     commands.spawn(SpriteBundle {
         texture: asset_server.load("textures/overworld_background.png"),

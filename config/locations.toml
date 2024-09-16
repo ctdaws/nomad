@@ -1,5 +1,4 @@
-[[locations]]
-id = 0
+[locations.0]
 sticks = [
   { x = 600.0, y = -450.0 },
   { x = 650.0, y = -475.0 },
@@ -19,7 +18,13 @@ berry_bushes = [
   { x = -350.0, y = 300.0 },
   { x = -400.0, y = 375.0 },
 ]
-water_pools = [
-{ x = 700.0, y = 400.0 }
-]
+water_pools = [{ x = 700.0, y = 400.0 }]
 change_location_zones = [{ x = 0.0, y = 500.0, connected_location = 1 }]
+
+[locations.1]
+trees = [
+  { x = 0.0, y = -200.0 },
+  { x = -100.0, y = -300.0 },
+  { x = 100.0, y = -260.0 },
+]
+change_location_zones = [{ x = 0.0, y = 500.0, connected_location = 0 }]

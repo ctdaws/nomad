@@ -15,7 +15,7 @@ use bevy::{
     utils::default,
 };
 
-use crate::overworld::party_resources::PartyResources;
+use crate::party_resources::PartyResources;
 
 #[derive(Event)]
 pub struct UpdateFoodUIEvent(pub i32);

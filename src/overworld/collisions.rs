@@ -9,10 +9,9 @@ use bevy::{
     transform::components::Transform,
 };
 
-use super::{
-    change_location::ChangeLocationEvent,
-    entities::{change_location_zone::ChangeLocationZone, player::Player},
-};
+use crate::change_location::ChangeLocationEvent;
+
+use super::entities::{change_location_zone::ChangeLocationZone, player::Player};
 
 const SCREEN_TOP_BOUND: f32 = 540.;
 const SCREEN_BOTTOM_BOUND: f32 = -540.;
@@ -107,7 +106,7 @@ pub fn collisions(
 
     for (transform, collider) in change_location_zone_query.iter() {
         if player_collider.did_collide_with_rectangle(&*player_transform, transform, collider) {
-            change_location_events.send(ChangeLocationEvent);
+            // change_location_events.send(ChangeLocationEvent);
         }
     }
 }

@@ -1,5 +1,6 @@
 use std::fs;
 
+use bevy::utils::HashMap;
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug, Clone)]
@@ -35,7 +36,6 @@ pub struct ChangeLocationZoneConfig {
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct LocationConfig {
-    pub id: u32,
     pub sticks: Option<Vec<StickConfig>>,
     pub trees: Option<Vec<TreeConfig>>,
     pub berry_bushes: Option<Vec<BerryBushConfig>>,
@@ -45,12 +45,5 @@ pub struct LocationConfig {
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct LocationConfigs {
-    pub locations: Vec<LocationConfig>,
-}
-
-pub fn load_location_configs() -> Vec<LocationConfig> {
-    let content = fs::read_to_string("config/locations.toml").unwrap();
-
-    let location_configs: LocationConfigs = toml::from_str(&content).unwrap();
-    location_configs.locations
+    pub locations: HashMap<String, LocationConfig>,
 }

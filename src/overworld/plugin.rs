@@ -3,8 +3,13 @@ use bevy::{
     ecs::schedule::IntoSystemConfigs,
 };
 
-use super::{
+use crate::{
     change_location::{change_location, ChangeLocationEvent},
+    locations::setup::setup_locations,
+    party_resources::{PartyResources, UpdateFoodEvent, UpdateWaterEvent, UpdateWoodEvent},
+};
+
+use super::{
     collisions::collisions,
     entities::{
         berry_bush::{pick_berry_bush, BerryBushPickedEvent},
@@ -12,12 +17,11 @@ use super::{
         stick::{pick_up_stick, StickPickedUpEvent},
         water_pool::{collect_water, WaterCollectedEvent},
     },
-    party_resources::{
-        update_food, update_water, update_wood, PartyResources, UpdateFoodEvent, UpdateWaterEvent,
-        UpdateWoodEvent,
-    },
     setup::setup_overworld,
-    ui::plugin::OverworldUIPlugin,
+    ui::{
+        party_resources::{update_food, update_water, update_wood},
+        plugin::OverworldUIPlugin,
+    },
 };
 
 pub struct OverworldPlugin;
@@ -33,7 +37,7 @@ impl Plugin for OverworldPlugin {
             .add_event::<WaterCollectedEvent>()
             .add_event::<ChangeLocationEvent>()
             .init_resource::<PartyResources>()
-            .add_systems(Startup, setup_overworld)
+            .add_systems(Startup, setup_overworld.after(setup_locations))
             .add_systems(
                 Update,
                 (
