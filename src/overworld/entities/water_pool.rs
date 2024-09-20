@@ -23,10 +23,10 @@ const WATER_POOL_INTERACTION_RADIUS: f32 = 40.;
 #[derive(Event)]
 pub struct WaterCollectedEvent();
 
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct WaterPool;
 
-#[derive(Bundle)]
+#[derive(Bundle, Clone)]
 pub struct WaterPoolBundle {
     marker: WaterPool,
     interaction_collider: CircleCollider,

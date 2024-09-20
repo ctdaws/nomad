@@ -9,17 +9,17 @@ use bevy::{
 };
 
 use crate::{
-    locations::setup::LocationId,
+    locations::location::LocationId,
     overworld::{collisions::RectangleCollider, setup::OVERWORLD_INTERACTABLE_ENTITIES_LAYER},
 };
 
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct ChangeLocationZone;
 
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct ConnectedLocationId(pub LocationId);
 
-#[derive(Bundle)]
+#[derive(Bundle, Clone)]
 pub struct ChangeLocationZoneBundle {
     marker: ChangeLocationZone,
     collider: RectangleCollider,

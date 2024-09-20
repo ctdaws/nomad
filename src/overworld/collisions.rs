@@ -21,7 +21,7 @@ const SCREEN_BOTTOM_BOUND: f32 = -540.;
 const SCREEN_LEFT_BOUND: f32 = -960.;
 const SCREEN_RIGHT_BOUND: f32 = 960.;
 
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct CircleCollider {
     pub radius: f32,
 }
@@ -46,7 +46,7 @@ impl CircleCollider {
     }
 }
 
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct RectangleCollider {
     pub half_width: f32,
     pub half_height: f32,

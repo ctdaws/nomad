@@ -24,10 +24,10 @@ const STICK_INTERACTION_RADIUS: f32 = 40.;
 #[derive(Event)]
 pub struct StickPickedUpEvent(pub Entity);
 
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct Stick;
 
-#[derive(Bundle)]
+#[derive(Bundle, Clone)]
 pub struct StickBundle {
     marker: Stick,
     interaction_collider: CircleCollider,

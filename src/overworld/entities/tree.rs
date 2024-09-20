@@ -12,10 +12,10 @@ use crate::overworld::{collisions::CircleCollider, setup::OVERWORLD_INTERACTABLE
 
 const TREE_INTERACTION_RADIUS: f32 = 10.;
 
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct Tree;
 
-#[derive(Bundle)]
+#[derive(Bundle, Clone)]
 pub struct TreeBundle {
     marker: Tree,
     interaction_collider: CircleCollider,

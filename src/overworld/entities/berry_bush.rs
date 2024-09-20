@@ -25,21 +25,21 @@ const BERRY_BUSH_INTERACTION_RADIUS: f32 = 50.;
 #[derive(Event)]
 pub struct BerryBushPickedEvent(pub Entity);
 
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct BerryBush;
 
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub enum BerryBushState {
     Unpicked,
     Picked,
 }
 
-#[derive(Bundle)]
+#[derive(Bundle, Clone)]
 pub struct BerryBushBundle {
     marker: BerryBush,
-    state: BerryBushState,
+    pub state: BerryBushState,
     interaction_collider: CircleCollider,
-    sprite: SpriteBundle,
+    pub sprite: SpriteBundle,
 }
 
 impl BerryBushBundle {
