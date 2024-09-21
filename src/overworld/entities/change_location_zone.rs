@@ -1,7 +1,9 @@
+use std::f32::consts::PI;
+
 use bevy::{
     asset::Handle,
     ecs::{bundle::Bundle, component::Component},
-    math::{Vec2, Vec3},
+    math::{Quat, Vec2, Vec3},
     render::texture::Image,
     sprite::{Sprite, SpriteBundle},
     transform::components::Transform,
@@ -28,7 +30,12 @@ pub struct ChangeLocationZoneBundle {
 }
 
 impl ChangeLocationZoneBundle {
-    pub fn new(position: Vec2, texture: Handle<Image>, connected_location_id: LocationId) -> Self {
+    pub fn new(
+        position: Vec2,
+        rotation_degrees: f32,
+        texture: Handle<Image>,
+        connected_location_id: LocationId,
+    ) -> Self {
         ChangeLocationZoneBundle {
             marker: ChangeLocationZone,
             collider: RectangleCollider {
@@ -40,7 +47,8 @@ impl ChangeLocationZoneBundle {
                     position.x,
                     position.y,
                     OVERWORLD_INTERACTABLE_ENTITIES_LAYER,
-                )),
+                ))
+                .with_rotation(Quat::from_rotation_z(rotation_degrees * (PI / 180.))),
                 texture,
                 sprite: Sprite {
                     custom_size: Some(Vec2::new(80., 80.)),

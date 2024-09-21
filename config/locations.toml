@@ -1,37 +1,61 @@
 [locations.0]
-trees = [
-  { x = 0.0, y = -200.0 },
-  { x = -100.0, y = -300.0 },
-  { x = 100.0, y = -260.0 },
+background = "background_settlement"
+change_location_zones = [
+  { x = 0.0, y = 500.0, rotation_degrees = 0.0, connected_location = 1 },
 ]
-change_location_zones = [{ x = 0.0, y = 500.0, connected_location = 1 }]
 
 [locations.1]
-trees = [{ x = 100.0, y = -200.0 }, { x = -500.0, y = -300.0 }]
-change_location_zones = [{ x = 0.0, y = 500.0, connected_location = 2 }]
+background = "background_river"
+trees = [
+  { x = -100.0, y = 200.0 },
+  { x = -300.0, y = 300.0 },
+  { x = 100.0, y = 260.0 },
+]
+change_location_zones = [
+  { x = 0.0, y = 500.0, rotation_degrees = 0.0, connected_location = 2 },
+  { x = -920.0, y = 0.0, rotation_degrees = 90.0, connected_location = 4 },
+  { x = 0.0, y = -500.0, rotation_degrees = 180.0, connected_location = 0 },
+]
 
 [locations.2]
-sticks = [
-  { x = 600.0, y = -450.0 },
-  { x = 650.0, y = -475.0 },
-  { x = 700.0, y = -400.0 },
+background = "background_river"
+trees = [
+  { x = 0.0, y = 200.0 },
+  { x = -100.0, y = 300.0 },
+  { x = 100.0, y = 260.0 },
 ]
-change_location_zones = [{ x = 0.0, y = 500.0, connected_location = 3 }]
+sticks = [
+  { x = 400.0, y = -450.0 },
+  { x = 450.0, y = -475.0 },
+  { x = 500.0, y = -400.0 },
+]
+change_location_zones = [
+  { x = -920.0, y = 0.0, rotation_degrees = 90.0, connected_location = 3 },
+  { x = 0.0, y = -500.0, rotation_degrees = 180.0, connected_location = 1 },
+]
 
 [locations.3]
+background = "background_meadows"
 berry_bushes = [
   { x = -250.0, y = 400.0 },
   { x = -275.0, y = 350.0 },
   { x = -350.0, y = 300.0 },
   { x = -400.0, y = 375.0 },
 ]
-change_location_zones = [{ x = 0.0, y = 500.0, connected_location = 4 }]
+change_location_zones = [
+  { x = 920.0, y = 0.0, rotation_degrees = -90.0, connected_location = 2 },
+  { x = 0.0, y = -500.0, rotation_degrees = 180.0, connected_location = 4 },
+]
 
 [locations.4]
+background = "background_meadows"
 sticks = [
   { x = -450.0, y = -200.0 },
   { x = -475.0, y = -250.0 },
   { x = -500.0, y = -225.0 },
 ]
 water_pools = [{ x = 700.0, y = 400.0 }]
-change_location_zones = [{ x = 0.0, y = 500.0, connected_location = 0 }]
+change_location_zones = [
+  { x = 0.0, y = 500.0, rotation_degrees = 0.0, connected_location = 3 },
+  { x = 920.0, y = 0.0, rotation_degrees = -90.0, connected_location = 1 },
+]

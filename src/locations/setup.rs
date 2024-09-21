@@ -51,7 +51,7 @@ pub fn setup_locations(
 
     for (id, config) in location_configs {
         let background = SpriteBundle {
-            texture: asset_server.load("textures/overworld_background.png"),
+            texture: asset_server.load(format!("textures/{}.png", config.background)),
             transform: Transform::from_xyz(0., 0., OVERWORLD_BACKGROUND_LAYER),
             ..default()
         };
@@ -136,6 +136,7 @@ pub fn setup_locations(
                         LocationEntityId(location_entity_id),
                         ChangeLocationZoneBundle::new(
                             Vec2::new(change_location_zone.x, change_location_zone.y),
+                            change_location_zone.rotation_degrees,
                             change_location_zone_texture.clone(),
                             LocationId(change_location_zone.connected_location),
                         ),

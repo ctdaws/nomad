@@ -29,11 +29,13 @@ pub struct WaterPoolConfig {
 pub struct ChangeLocationZoneConfig {
     pub x: f32,
     pub y: f32,
+    pub rotation_degrees: f32,
     pub connected_location: u32,
 }
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct LocationConfig {
+    pub background: String,
     pub sticks: Option<Vec<StickConfig>>,
     pub trees: Option<Vec<TreeConfig>>,
     pub berry_bushes: Option<Vec<BerryBushConfig>>,
