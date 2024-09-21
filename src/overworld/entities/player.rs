@@ -6,7 +6,7 @@ use bevy::{
         entity::Entity,
         event::EventWriter,
         query::With,
-        system::{ParamSet, Query, Res},
+        system::{Commands, ParamSet, Query, Res},
     },
     input::{keyboard::KeyCode, ButtonInput},
     math::{Vec2, Vec3},
@@ -149,4 +149,8 @@ pub fn player_interaction(
             }
         }
     }
+}
+
+pub fn despawn_player(mut commands: Commands, player_query: Query<Entity, With<Player>>) {
+    commands.entity(player_query.single()).despawn()
 }

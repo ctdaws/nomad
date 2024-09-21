@@ -4,6 +4,7 @@ pub mod locations {
     pub mod location;
     pub mod setup;
 }
+pub mod game_over;
 pub mod party_resources;
 pub mod overworld {
     pub mod collisions;

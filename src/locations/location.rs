@@ -59,6 +59,9 @@ pub struct ChangeLocationEvent(pub LocationId);
 #[derive(Event)]
 pub struct SpawnLocationEvent(pub LocationId);
 
+#[derive(Event)]
+pub struct DespawnLocationEvent(pub LocationId);
+
 pub fn spawn_location(
     mut commands: Commands,
     mut spawn_location_events: EventReader<SpawnLocationEvent>,
@@ -129,59 +132,83 @@ pub fn spawn_location(
     }
 }
 
-pub fn change_location(
-    mut commands: Commands,
-    mut change_location_events: EventReader<ChangeLocationEvent>,
-    mut spawn_location_events: EventWriter<SpawnLocationEvent>,
-    mut current_location: ResMut<CurrentLocation>,
-    mut locations: ResMut<Locations>,
-    location_entities: Res<LocationEntities>,
-    mut location_scene_query: Query<Entity, With<LocationScene>>,
-    berry_bush_query: Query<(&BerryBushState, &Handle<Image>), With<BerryBush>>,
-    mut player_transform_query: Query<&mut Transform, With<Player>>,
-    mut update_food_events: EventWriter<UpdateFoodEvent>,
-    mut update_water_events: EventWriter<UpdateWaterEvent>,
+fn save_location_state(
+    commands: &mut Commands,
+    location: &mut Location,
+    location_entities: &mut ResMut<LocationEntities>,
+    berry_bush_query: &Query<(&BerryBushState, &Handle<Image>), With<BerryBush>>,
 ) {
-    for ev in change_location_events.read() {
-        let location = locations.0.get_mut(&current_location.0).unwrap();
-
-        if let Some(sticks) = location.sticks.clone() {
-            for stick_id in sticks.keys() {
-                if commands.get_entity(location_entities.0[stick_id]).is_none() {
-                    location.sticks.as_mut().unwrap().remove(stick_id);
-                }
+    if let Some(sticks) = location.sticks.clone() {
+        for stick_id in sticks.keys() {
+            if commands.get_entity(location_entities.0[stick_id]).is_none() {
+                location.sticks.as_mut().unwrap().remove(stick_id);
             }
         }
+    }
 
-        if let Some(berry_bushes) = location.berry_bushes.clone() {
-            for berry_bush_id in berry_bushes.keys() {
-                let (berry_bush_state, berry_bush_texture) = berry_bush_query
-                    .get(location_entities.0[berry_bush_id])
-                    .unwrap();
+    if let Some(berry_bushes) = location.berry_bushes.clone() {
+        for berry_bush_id in berry_bushes.keys() {
+            let (berry_bush_state, berry_bush_texture) = berry_bush_query
+                .get(location_entities.0[berry_bush_id])
+                .unwrap();
 
-                location
-                    .berry_bushes
-                    .as_mut()
-                    .unwrap()
-                    .get_mut(berry_bush_id)
-                    .unwrap()
-                    .state = berry_bush_state.clone();
+            location
+                .berry_bushes
+                .as_mut()
+                .unwrap()
+                .get_mut(berry_bush_id)
+                .unwrap()
+                .state = berry_bush_state.clone();
 
-                location
-                    .berry_bushes
-                    .as_mut()
-                    .unwrap()
-                    .get_mut(berry_bush_id)
-                    .unwrap()
-                    .sprite
-                    .texture = berry_bush_texture.clone();
-            }
+            location
+                .berry_bushes
+                .as_mut()
+                .unwrap()
+                .get_mut(berry_bush_id)
+                .unwrap()
+                .sprite
+                .texture = berry_bush_texture.clone();
         }
+    }
+}
+
+pub fn despawn_location(
+    mut commands: Commands,
+    mut despawn_location_events: EventReader<DespawnLocationEvent>,
+    mut location_scene_query: Query<Entity, With<LocationScene>>,
+    mut locations: ResMut<Locations>,
+    mut location_entities: ResMut<LocationEntities>,
+    berry_bush_query: Query<(&BerryBushState, &Handle<Image>), With<BerryBush>>,
+) {
+    for ev in despawn_location_events.read() {
+        let location = locations.0.get_mut(&ev.0).unwrap();
+
+        save_location_state(
+            &mut commands,
+            location,
+            &mut location_entities,
+            &berry_bush_query,
+        );
 
         commands
             .entity(location_scene_query.single_mut())
             .despawn_descendants();
 
+        location_entities.0.clear();
+    }
+}
+
+pub fn change_location(
+    mut change_location_events: EventReader<ChangeLocationEvent>,
+    mut spawn_location_events: EventWriter<SpawnLocationEvent>,
+    mut despawn_location_events: EventWriter<DespawnLocationEvent>,
+    mut current_location: ResMut<CurrentLocation>,
+    mut player_transform_query: Query<&mut Transform, With<Player>>,
+    mut update_food_events: EventWriter<UpdateFoodEvent>,
+    mut update_water_events: EventWriter<UpdateWaterEvent>,
+) {
+    for ev in change_location_events.read() {
+        despawn_location_events.send(DespawnLocationEvent(current_location.0.clone()));
         spawn_location_events.send(SpawnLocationEvent(ev.0.clone()));
 
         update_food_events.send(UpdateFoodEvent(-1));
