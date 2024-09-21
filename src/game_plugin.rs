@@ -48,8 +48,7 @@ impl Plugin for GamePlugin {
             .add_systems(
                 Update,
                 (
-                    change_location,
-                    spawn_location,
+                    (change_location, spawn_location).chain(),
                     update_food,
                     update_water,
                     update_wood,
