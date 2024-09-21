@@ -31,7 +31,11 @@ impl Plugin for GamePlugin {
         app.add_plugins(OverworldPlugin)
             .init_resource::<Locations>()
             .init_resource::<LocationEntities>()
-            .init_resource::<PartyResources>()
+            .insert_resource(PartyResources {
+                food: 10,
+                water: 10,
+                wood: 0,
+            })
             .insert_resource(CurrentLocation(LocationId(0)))
             .add_event::<UpdateFoodEvent>()
             .add_event::<UpdateWaterEvent>()

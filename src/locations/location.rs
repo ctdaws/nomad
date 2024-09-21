@@ -14,13 +14,16 @@ use bevy::{
     utils::HashMap,
 };
 
-use crate::overworld::entities::{
-    berry_bush::{BerryBush, BerryBushBundle, BerryBushState},
-    change_location_zone::ChangeLocationZoneBundle,
-    player::Player,
-    stick::StickBundle,
-    tree::TreeBundle,
-    water_pool::WaterPoolBundle,
+use crate::{
+    overworld::entities::{
+        berry_bush::{BerryBush, BerryBushBundle, BerryBushState},
+        change_location_zone::ChangeLocationZoneBundle,
+        player::Player,
+        stick::StickBundle,
+        tree::TreeBundle,
+        water_pool::WaterPoolBundle,
+    },
+    party_resources::{UpdateFoodEvent, UpdateWaterEvent},
 };
 
 #[derive(Component)]
@@ -136,6 +139,8 @@ pub fn change_location(
     mut location_scene_query: Query<Entity, With<LocationScene>>,
     berry_bush_query: Query<(&BerryBushState, &Handle<Image>), With<BerryBush>>,
     mut player_transform_query: Query<&mut Transform, With<Player>>,
+    mut update_food_events: EventWriter<UpdateFoodEvent>,
+    mut update_water_events: EventWriter<UpdateWaterEvent>,
 ) {
     for ev in change_location_events.read() {
         let location = locations.0.get_mut(&current_location.0).unwrap();
@@ -178,6 +183,9 @@ pub fn change_location(
             .despawn_descendants();
 
         spawn_location_events.send(SpawnLocationEvent(ev.0.clone()));
+
+        update_food_events.send(UpdateFoodEvent(-1));
+        update_water_events.send(UpdateWaterEvent(-1));
 
         current_location.0 = ev.0.clone();
 
