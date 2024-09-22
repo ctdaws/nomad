@@ -15,7 +15,7 @@ use bevy::{
 
 use crate::{
     overworld::{collisions::CircleCollider, setup::OVERWORLD_INTERACTABLE_ENTITIES_LAYER},
-    party_resources::{PartyResources, UpdateWaterEvent, PARTY_MAX_WATER},
+    party_resources::{PartyResources, UpdatePartyWaterEvent, PARTY_MAX_WATER},
 };
 
 const WATER_POOL_INTERACTION_RADIUS: f32 = 40.;
@@ -60,9 +60,9 @@ impl WaterPoolBundle {
 pub fn collect_water(
     party_resources: Res<PartyResources>,
     mut water_collected_events: EventReader<WaterCollectedEvent>,
-    mut update_water_events: EventWriter<UpdateWaterEvent>,
+    mut update_water_events: EventWriter<UpdatePartyWaterEvent>,
 ) {
     for _ in water_collected_events.read() {
-        update_water_events.send(UpdateWaterEvent(PARTY_MAX_WATER - party_resources.water));
+        update_water_events.send(UpdatePartyWaterEvent(PARTY_MAX_WATER - party_resources.water));
     }
 }

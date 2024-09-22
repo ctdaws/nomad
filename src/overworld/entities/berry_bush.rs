@@ -17,7 +17,7 @@ use bevy::{
 
 use crate::{
     overworld::{collisions::CircleCollider, setup::OVERWORLD_INTERACTABLE_ENTITIES_LAYER},
-    party_resources::UpdateFoodEvent,
+    party_resources::UpdatePartyFoodEvent,
 };
 
 const BERRY_BUSH_INTERACTION_RADIUS: f32 = 50.;
@@ -71,12 +71,12 @@ pub fn pick_berry_bush(
     asset_server: Res<AssetServer>,
     mut berry_bush_picked_events: EventReader<BerryBushPickedEvent>,
     mut query: Query<(&mut BerryBushState, &mut Handle<Image>), With<BerryBush>>,
-    mut update_food_events: EventWriter<UpdateFoodEvent>,
+    mut update_food_events: EventWriter<UpdatePartyFoodEvent>,
 ) {
     for ev in berry_bush_picked_events.read() {
         let (mut state, mut texture) = query.get_mut(ev.0).unwrap();
         *state = BerryBushState::Picked;
-        update_food_events.send(UpdateFoodEvent(10));
+        update_food_events.send(UpdatePartyFoodEvent(10));
         *texture = asset_server.load("textures/berry_bush_picked.png");
     }
 }

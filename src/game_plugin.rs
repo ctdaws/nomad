@@ -20,8 +20,13 @@ use crate::{
         plugin::{OverworldPlugin, OverworldSet},
     },
     party_resources::{
-        update_food, update_water, update_wood, PartyResources, UpdateFoodEvent, UpdateWaterEvent,
-        UpdateWoodEvent,
+        update_party_food, update_party_water, update_party_wood, PartyResources,
+        UpdatePartyFoodEvent, UpdatePartyWaterEvent, UpdatePartyWoodEvent,
+    },
+    settlement_resources::{
+        update_settlement_food, update_settlement_water, update_settlement_wood,
+        SettlementResources, UpdateSettlementFoodEvent, UpdateSettlementWaterEvent,
+        UpdateSettlementWoodEvent,
     },
     WINDOW_START_HEIGHT, WINDOW_START_WIDTH,
 };
@@ -45,19 +50,37 @@ impl Plugin for GamePlugin {
             .init_resource::<Locations>()
             .init_resource::<LocationEntities>()
             .insert_resource(PartyResources {
-                food: 1,
-                water: 1,
+                food: 10,
+                water: 10,
+                wood: 0,
+            })
+            .insert_resource(SettlementResources {
+                food: 0,
+                water: 0,
                 wood: 0,
             })
             .insert_resource(CurrentLocation(LocationId(0)))
-            .add_event::<UpdateFoodEvent>()
-            .add_event::<UpdateWaterEvent>()
-            .add_event::<UpdateWoodEvent>()
+            .add_event::<UpdatePartyFoodEvent>()
+            .add_event::<UpdatePartyWaterEvent>()
+            .add_event::<UpdatePartyWoodEvent>()
+            .add_event::<UpdateSettlementFoodEvent>()
+            .add_event::<UpdateSettlementWaterEvent>()
+            .add_event::<UpdateSettlementWoodEvent>()
             .add_event::<ChangeLocationEvent>()
             .add_event::<SpawnLocationEvent>()
             .add_event::<DespawnLocationEvent>()
             .add_systems(Startup, setup_game_camera)
-            .add_systems(Update, (update_food, update_water, update_wood))
+            .add_systems(
+                Update,
+                (
+                    update_party_food,
+                    update_party_water,
+                    update_party_wood,
+                    update_settlement_food,
+                    update_settlement_water,
+                    update_settlement_wood,
+                ),
+            )
             .add_systems(Update, check_for_game_over.in_set(OverworldSet))
             .add_systems(
                 OnEnter(GameState::GameOver),

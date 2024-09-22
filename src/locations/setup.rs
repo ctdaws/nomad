@@ -16,7 +16,8 @@ use bevy::{
 use crate::overworld::{
     entities::{
         berry_bush::BerryBushBundle, change_location_zone::ChangeLocationZoneBundle,
-        stick::StickBundle, tree::TreeBundle, water_pool::WaterPoolBundle,
+        stick::StickBundle, stockpile::StockpileBundle, tree::TreeBundle,
+        water_pool::WaterPoolBundle,
     },
     setup::OVERWORLD_BACKGROUND_LAYER,
 };
@@ -46,6 +47,7 @@ pub fn setup_locations(
     let water_pool_texture: Handle<Image> = asset_server.load("textures/water_pool.png");
     let change_location_zone_texture: Handle<Image> =
         asset_server.load("textures/change_location_zone.png");
+    let stockpile_texture: Handle<Image> = asset_server.load("textures/settlement_stockpile.png");
 
     let location_configs = load_location_configs();
 
@@ -149,6 +151,15 @@ pub fn setup_locations(
                 None
             };
 
+        let stockpile = if let Some(stockpile) = config.stockpile {
+            Some(StockpileBundle::new(
+                Vec2::new(stockpile.x, stockpile.y),
+                stockpile_texture.clone(),
+            ))
+        } else {
+            None
+        };
+
         let location = Location {
             background,
             sticks,
@@ -156,6 +167,7 @@ pub fn setup_locations(
             berry_bushes,
             water_pools,
             change_location_zones,
+            stockpile,
         };
 
         locations

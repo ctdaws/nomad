@@ -6,6 +6,7 @@ pub mod locations {
 }
 pub mod game_over;
 pub mod party_resources;
+pub mod settlement_resources;
 pub mod overworld {
     pub mod collisions;
     pub mod entities {
@@ -13,6 +14,7 @@ pub mod overworld {
         pub mod change_location_zone;
         pub mod player;
         pub mod stick;
+        pub mod stockpile;
         pub mod tree;
         pub mod water_pool;
     }
@@ -21,6 +23,7 @@ pub mod overworld {
     pub mod ui {
         pub mod party_resources;
         pub mod plugin;
+        pub mod settlement_resources;
     }
 }
 

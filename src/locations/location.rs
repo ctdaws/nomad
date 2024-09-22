@@ -20,10 +20,11 @@ use crate::{
         change_location_zone::ChangeLocationZoneBundle,
         player::Player,
         stick::StickBundle,
+        stockpile::StockpileBundle,
         tree::TreeBundle,
         water_pool::WaterPoolBundle,
     },
-    party_resources::{UpdateFoodEvent, UpdateWaterEvent},
+    party_resources::{UpdatePartyFoodEvent, UpdatePartyWaterEvent},
 };
 
 #[derive(Component)]
@@ -45,6 +46,7 @@ pub struct Location {
     pub berry_bushes: Option<HashMap<LocationEntityId, BerryBushBundle>>,
     pub water_pools: Option<HashMap<LocationEntityId, WaterPoolBundle>>,
     pub change_location_zones: Option<HashMap<LocationEntityId, ChangeLocationZoneBundle>>,
+    pub stockpile: Option<StockpileBundle>,
 }
 
 #[derive(Resource, Default)]
@@ -122,6 +124,11 @@ pub fn spawn_location(
                     .insert(change_location_zone_id.clone(), change_location_zone);
                 entities.push(change_location_zone);
             }
+        }
+
+        if let Some(stockpile) = &location.stockpile {
+            let stockpile = commands.spawn(stockpile.clone()).id();
+            entities.push(stockpile);
         }
 
         let location_scene = location_scene_query.single_mut();
@@ -204,15 +211,15 @@ pub fn change_location(
     mut despawn_location_events: EventWriter<DespawnLocationEvent>,
     mut current_location: ResMut<CurrentLocation>,
     mut player_transform_query: Query<&mut Transform, With<Player>>,
-    mut update_food_events: EventWriter<UpdateFoodEvent>,
-    mut update_water_events: EventWriter<UpdateWaterEvent>,
+    mut update_food_events: EventWriter<UpdatePartyFoodEvent>,
+    mut update_water_events: EventWriter<UpdatePartyWaterEvent>,
 ) {
     for ev in change_location_events.read() {
         despawn_location_events.send(DespawnLocationEvent(current_location.0.clone()));
         spawn_location_events.send(SpawnLocationEvent(ev.0.clone()));
 
-        update_food_events.send(UpdateFoodEvent(-1));
-        update_water_events.send(UpdateWaterEvent(-1));
+        update_food_events.send(UpdatePartyFoodEvent(-1));
+        update_water_events.send(UpdatePartyWaterEvent(-1));
 
         current_location.0 = ev.0.clone();
 

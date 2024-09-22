@@ -34,6 +34,12 @@ pub struct ChangeLocationZoneConfig {
 }
 
 #[derive(Deserialize, Debug, Clone)]
+pub struct StockpileConfig {
+    pub x: f32,
+    pub y: f32,
+}
+
+#[derive(Deserialize, Debug, Clone)]
 pub struct LocationConfig {
     pub background: String,
     pub sticks: Option<Vec<StickConfig>>,
@@ -41,6 +47,7 @@ pub struct LocationConfig {
     pub berry_bushes: Option<Vec<BerryBushConfig>>,
     pub water_pools: Option<Vec<WaterPoolConfig>>,
     pub change_location_zones: Option<Vec<ChangeLocationZoneConfig>>,
+    pub stockpile: Option<StockpileConfig>,
 }
 
 #[derive(Deserialize, Debug, Clone)]

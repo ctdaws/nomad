@@ -24,6 +24,7 @@ use crate::overworld::{
 use super::{
     berry_bush::{BerryBush, BerryBushPickedEvent, BerryBushState},
     stick::{Stick, StickPickedUpEvent},
+    stockpile::{Stockpile, StockpileDepositEvent},
     water_pool::{WaterCollectedEvent, WaterPool},
 };
 
@@ -107,10 +108,12 @@ pub fn player_interaction(
         Query<(Entity, &Transform, &CircleCollider), With<Stick>>,
         Query<(Entity, &BerryBushState, &Transform, &CircleCollider), With<BerryBush>>,
         Query<(&Transform, &CircleCollider), With<WaterPool>>,
+        Query<(&Transform, &CircleCollider), With<Stockpile>>,
     )>,
     mut stick_picked_up_events: EventWriter<StickPickedUpEvent>,
     mut berry_bush_picked_events: EventWriter<BerryBushPickedEvent>,
     mut water_collected_events: EventWriter<WaterCollectedEvent>,
+    mut stockpile_deposit_events: EventWriter<StockpileDepositEvent>,
 ) {
     if keys.just_pressed(KeyCode::Space) {
         let (player_tranform, player_interaction_collider) = player_query.single();
@@ -146,6 +149,16 @@ pub fn player_interaction(
                 water_pool_interaction_collider,
             ) {
                 water_collected_events.send(WaterCollectedEvent());
+            }
+        }
+
+        for (stockpile_transform, stockpile_interaction_collider) in interactables.p3().iter() {
+            if player_interaction_collider.did_collide_with_circle(
+                player_tranform,
+                stockpile_transform,
+                stockpile_interaction_collider,
+            ) {
+                stockpile_deposit_events.send(StockpileDepositEvent);
             }
         }
     }

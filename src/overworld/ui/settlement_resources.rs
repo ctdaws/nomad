@@ -7,6 +7,7 @@ use bevy::{
         system::{Commands, Query, Res},
     },
     hierarchy::BuildChildren,
+    render::view::Visibility,
     text::{Text, TextSection, TextStyle},
     ui::{
         node_bundles::{NodeBundle, TextBundle},
@@ -15,35 +16,41 @@ use bevy::{
     utils::default,
 };
 
-use crate::party_resources::PartyResources;
+use crate::{
+    locations::location::{CurrentLocation, LocationId},
+    settlement_resources::SettlementResources,
+};
 
 #[derive(Event)]
-pub struct UpdatePartyFoodUIEvent(pub i32);
+pub struct UpdateSettlementFoodUIEvent(pub i32);
 #[derive(Event)]
-pub struct UpdatePartyWaterUIEvent(pub i32);
+pub struct UpdateSettlementWaterUIEvent(pub i32);
 #[derive(Event)]
-pub struct UpdatePartyWoodUIEvent(pub i32);
+pub struct UpdateSettlementWoodUIEvent(pub i32);
 
 #[derive(Component)]
-pub struct PartyResourcesUI;
+pub struct SettlementResourcesUI;
 
 #[derive(Component)]
-pub struct PartyFoodUI;
+pub struct SettlementFoodUI;
 #[derive(Component)]
-pub struct PartyWaterUI;
+pub struct SettlementWaterUI;
 #[derive(Component)]
-pub struct PartyWoodUI;
+pub struct SettlementWoodUI;
 
-pub fn setup_party_resources_ui(mut commands: Commands, party_resources: Res<PartyResources>) {
+pub fn setup_settlement_resources_ui(
+    mut commands: Commands,
+    settlement_resources: Res<SettlementResources>,
+) {
     commands
         .spawn((
-            PartyResourcesUI,
+            SettlementResourcesUI,
             NodeBundle {
                 style: Style {
                     position_type: PositionType::Absolute,
                     width: Val::Px(150.),
                     height: Val::Px(100.),
-                    right: Val::Px(0.),
+                    right: Val::Px(200.),
                     top: Val::Px(10.),
                     display: Display::Flex,
                     flex_direction: FlexDirection::Column,
@@ -54,7 +61,7 @@ pub fn setup_party_resources_ui(mut commands: Commands, party_resources: Res<Par
         ))
         .with_children(|parent| {
             parent.spawn((
-                PartyFoodUI,
+                SettlementFoodUI,
                 TextBundle::from_sections([
                     TextSection::new(
                         "Food: ",
@@ -65,7 +72,7 @@ pub fn setup_party_resources_ui(mut commands: Commands, party_resources: Res<Par
                         },
                     ),
                     TextSection::new(
-                        party_resources.food.to_string(),
+                        settlement_resources.food.to_string(),
                         TextStyle {
                             font_size: 30.,
                             color: Color::LinearRgba(LinearRgba::WHITE),
@@ -76,7 +83,7 @@ pub fn setup_party_resources_ui(mut commands: Commands, party_resources: Res<Par
             ));
 
             parent.spawn((
-                PartyWaterUI,
+                SettlementWaterUI,
                 TextBundle::from_sections([
                     TextSection::new(
                         "Water: ",
@@ -87,7 +94,7 @@ pub fn setup_party_resources_ui(mut commands: Commands, party_resources: Res<Par
                         },
                     ),
                     TextSection::new(
-                        party_resources.water.to_string(),
+                        settlement_resources.water.to_string(),
                         TextStyle {
                             font_size: 30.,
                             color: Color::LinearRgba(LinearRgba::WHITE),
@@ -98,7 +105,7 @@ pub fn setup_party_resources_ui(mut commands: Commands, party_resources: Res<Par
             ));
 
             parent.spawn((
-                PartyWoodUI,
+                SettlementWoodUI,
                 TextBundle::from_sections([
                     TextSection::new(
                         "Wood: ",
@@ -109,7 +116,7 @@ pub fn setup_party_resources_ui(mut commands: Commands, party_resources: Res<Par
                         },
                     ),
                     TextSection::new(
-                        party_resources.wood.to_string(),
+                        settlement_resources.wood.to_string(),
                         TextStyle {
                             font_size: 30.,
                             color: Color::LinearRgba(LinearRgba::WHITE),
@@ -121,29 +128,40 @@ pub fn setup_party_resources_ui(mut commands: Commands, party_resources: Res<Par
         });
 }
 
-pub fn update_party_food(
-    mut update_party_food_events: EventReader<UpdatePartyFoodUIEvent>,
-    mut query: Query<&mut Text, With<PartyFoodUI>>,
+pub fn update_settlement_food(
+    mut update_settlement_food_events: EventReader<UpdateSettlementFoodUIEvent>,
+    mut query: Query<&mut Text, With<SettlementFoodUI>>,
 ) {
-    for ev in update_party_food_events.read() {
+    for ev in update_settlement_food_events.read() {
         query.single_mut().sections[1].value = ev.0.to_string()
     }
 }
 
-pub fn update_party_water(
-    mut update_party_water_events: EventReader<UpdatePartyWaterUIEvent>,
-    mut query: Query<&mut Text, With<PartyWaterUI>>,
+pub fn update_settlement_water(
+    mut update_settlement_water_events: EventReader<UpdateSettlementWaterUIEvent>,
+    mut query: Query<&mut Text, With<SettlementWaterUI>>,
 ) {
-    for ev in update_party_water_events.read() {
+    for ev in update_settlement_water_events.read() {
         query.single_mut().sections[1].value = ev.0.to_string()
     }
 }
 
-pub fn update_party_wood(
-    mut update_party_wood_events: EventReader<UpdatePartyWoodUIEvent>,
-    mut query: Query<&mut Text, With<PartyWoodUI>>,
+pub fn update_settlement_wood(
+    mut update_settlement_wood_events: EventReader<UpdateSettlementWoodUIEvent>,
+    mut query: Query<&mut Text, With<SettlementWoodUI>>,
 ) {
-    for ev in update_party_wood_events.read() {
+    for ev in update_settlement_wood_events.read() {
         query.single_mut().sections[1].value = ev.0.to_string()
+    }
+}
+
+pub fn update_settlement_resources_ui_visibility(
+    current_location: Res<CurrentLocation>,
+    mut visibility_query: Query<&mut Visibility, With<SettlementResourcesUI>>,
+) {
+    if current_location.0 == LocationId(0) {
+        *visibility_query.single_mut() = Visibility::Visible
+    } else {
+        *visibility_query.single_mut() = Visibility::Hidden
     }
 }

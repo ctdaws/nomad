@@ -18,6 +18,7 @@ use super::{
         berry_bush::{pick_berry_bush, BerryBushPickedEvent},
         player::{player_interaction, player_movement},
         stick::{pick_up_stick, StickPickedUpEvent},
+        stockpile::{deposit_resources, StockpileDepositEvent},
         water_pool::{collect_water, WaterCollectedEvent},
     },
     setup::setup_overworld,
@@ -35,6 +36,7 @@ impl Plugin for OverworldPlugin {
             .add_event::<StickPickedUpEvent>()
             .add_event::<BerryBushPickedEvent>()
             .add_event::<WaterCollectedEvent>()
+            .add_event::<StockpileDepositEvent>()
             .add_systems(
                 OnEnter(GameState::Overworld),
                 ((setup_locations, spawn_initial_location, setup_overworld).chain())
@@ -48,6 +50,7 @@ impl Plugin for OverworldPlugin {
                     pick_up_stick,
                     pick_berry_bush,
                     collect_water,
+                    deposit_resources,
                 )
                     .in_set(OverworldSet),
             )

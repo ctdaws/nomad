@@ -4,7 +4,7 @@ use bevy::ecs::{
 };
 
 use crate::overworld::ui::party_resources::{
-    UpdateFoodUIEvent, UpdateWaterUIEvent, UpdateWoodUIEvent,
+    UpdatePartyFoodUIEvent, UpdatePartyWaterUIEvent, UpdatePartyWoodUIEvent,
 };
 
 pub const PARTY_MAX_WATER: i32 = 30;
@@ -17,41 +17,41 @@ pub struct PartyResources {
 }
 
 #[derive(Event)]
-pub struct UpdateFoodEvent(pub i32);
+pub struct UpdatePartyFoodEvent(pub i32);
 #[derive(Event)]
-pub struct UpdateWaterEvent(pub i32);
+pub struct UpdatePartyWaterEvent(pub i32);
 #[derive(Event)]
-pub struct UpdateWoodEvent(pub i32);
+pub struct UpdatePartyWoodEvent(pub i32);
 
-pub fn update_food(
+pub fn update_party_food(
     mut party_resources: ResMut<PartyResources>,
-    mut update_food_events: EventReader<UpdateFoodEvent>,
-    mut update_food_ui_events: EventWriter<UpdateFoodUIEvent>,
+    mut update_party_food_events: EventReader<UpdatePartyFoodEvent>,
+    mut update_party_food_ui_events: EventWriter<UpdatePartyFoodUIEvent>,
 ) {
-    for ev in update_food_events.read() {
+    for ev in update_party_food_events.read() {
         party_resources.food += ev.0;
-        update_food_ui_events.send(UpdateFoodUIEvent(party_resources.food));
+        update_party_food_ui_events.send(UpdatePartyFoodUIEvent(party_resources.food));
     }
 }
 
-pub fn update_water(
+pub fn update_party_water(
     mut party_resources: ResMut<PartyResources>,
-    mut update_water_events: EventReader<UpdateWaterEvent>,
-    mut update_water_ui_events: EventWriter<UpdateWaterUIEvent>,
+    mut update_party_water_events: EventReader<UpdatePartyWaterEvent>,
+    mut update_party_water_ui_events: EventWriter<UpdatePartyWaterUIEvent>,
 ) {
-    for ev in update_water_events.read() {
+    for ev in update_party_water_events.read() {
         party_resources.water += ev.0;
-        update_water_ui_events.send(UpdateWaterUIEvent(party_resources.water));
+        update_party_water_ui_events.send(UpdatePartyWaterUIEvent(party_resources.water));
     }
 }
 
-pub fn update_wood(
+pub fn update_party_wood(
     mut party_resources: ResMut<PartyResources>,
-    mut update_wood_events: EventReader<UpdateWoodEvent>,
-    mut update_wood_ui_events: EventWriter<UpdateWoodUIEvent>,
+    mut update_party_wood_events: EventReader<UpdatePartyWoodEvent>,
+    mut update_party_wood_ui_events: EventWriter<UpdatePartyWoodUIEvent>,
 ) {
-    for ev in update_wood_events.read() {
+    for ev in update_party_wood_events.read() {
         party_resources.wood += ev.0;
-        update_wood_ui_events.send(UpdateWoodUIEvent(party_resources.wood));
+        update_party_wood_ui_events.send(UpdatePartyWoodUIEvent(party_resources.wood));
     }
 }
